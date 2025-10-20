@@ -4,9 +4,12 @@ import { Header } from '@/components/Header';
 import { ProfileSidebar } from '@/components/ProfileSidebar';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { Textarea } from '@/components/ui/textarea';
+import { Label } from '@/components/ui/label';
 import { fetchUserProfile, fetchWorkOrderDetail } from '@/lib/api';
 import { UserProfile, WorkOrderDetail } from '@/types';
-import { ArrowLeft, Calendar, MapPin, Package, User, FileText } from 'lucide-react';
+import { ArrowLeft, Calendar, MapPin, Package, User, FileText, Plus } from 'lucide-react';
 import { toast } from 'sonner';
 
 const WorkOrderDetailPage = () => {
@@ -16,6 +19,8 @@ const WorkOrderDetailPage = () => {
   const [profile, setProfile] = useState<UserProfile | null>(null);
   const [orderDetail, setOrderDetail] = useState<WorkOrderDetail | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [popisDela, setPopisDela] = useState('');
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
 
   useEffect(() => {
     const loadData = async () => {
@@ -52,6 +57,18 @@ const WorkOrderDetailPage = () => {
 
     loadData();
   }, [serijska, searchParams, navigate]);
+
+  const handleAddPopis = () => {
+    if (!popisDela.trim()) {
+      toast.error('Prosim vnesite popis dela');
+      return;
+    }
+    
+    // Here you would typically save to backend
+    toast.success('Popis dela uspešno dodan');
+    setPopisDela('');
+    setIsDialogOpen(false);
+  };
 
   if (isLoading) {
     return (
@@ -183,6 +200,49 @@ const WorkOrderDetailPage = () => {
                 <h2 className="mb-4 text-lg font-semibold">Opis dela</h2>
                 <p className="text-sm leading-relaxed text-muted-foreground">
                   {orderDetail.opis_dela}
+                </p>
+              </Card>
+
+              <Card className="p-6 shadow-elegant lg:col-span-2">
+                <div className="flex items-center justify-between mb-4">
+                  <h2 className="text-lg font-semibold">Popis dela</h2>
+                  <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+                    <DialogTrigger asChild>
+                      <Button className="gap-2">
+                        <Plus className="h-4 w-4" />
+                        Dodaj
+                      </Button>
+                    </DialogTrigger>
+                    <DialogContent className="sm:max-w-[525px]">
+                      <DialogHeader>
+                        <DialogTitle>Dodaj popis dela</DialogTitle>
+                        <DialogDescription>
+                          Vnesite opis opravljenega dela na tem delovnem nalogu.
+                        </DialogDescription>
+                      </DialogHeader>
+                      <div className="grid gap-4 py-4">
+                        <div className="grid gap-2">
+                          <Label htmlFor="popis">Popis dela</Label>
+                          <Textarea
+                            id="popis"
+                            placeholder="Opišite opravljeno delo..."
+                            value={popisDela}
+                            onChange={(e) => setPopisDela(e.target.value)}
+                            className="min-h-[150px]"
+                          />
+                        </div>
+                      </div>
+                      <DialogFooter>
+                        <Button variant="outline" onClick={() => setIsDialogOpen(false)}>
+                          Prekliči
+                        </Button>
+                        <Button onClick={handleAddPopis}>Shrani</Button>
+                      </DialogFooter>
+                    </DialogContent>
+                  </Dialog>
+                </div>
+                <p className="text-sm text-muted-foreground">
+                  Tu bo prikazan popis opravljenega dela.
                 </p>
               </Card>
             </div>

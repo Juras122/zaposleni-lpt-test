@@ -65,28 +65,28 @@ export async function fetchWorkOrders(): Promise<WorkOrder[]> {
   // Mock data
   return [
     {
-      serijska: 'DN-2025-001',
-      lokacija: 'Ljubljana, Celovška 150',
-      vrsta: 'Asfaltiranje',
-      material: 'Asfalt AC 11',
-      rok_izvedbe: '2025-02-15',
-      nacrti: 'PDF'
+      serijska: '284759301621',
+      lokacija: 'Zaloška cesta (pri OŠ)',
+      vrsta: 'novo',
+      material: 'plastika',
+      rok_izvedbe: '2024-10-13',
+      nacrti: '3d_prehod_zaloska.dwg'
     },
     {
-      serijska: 'DN-2025-002',
-      lokacija: 'Maribor, Titova 20',
-      vrsta: 'Tlakovanje',
-      material: 'Granitne kocke',
-      rok_izvedbe: '2025-02-20',
-      nacrti: 'PDF'
+      serijska: '510948372605',
+      lokacija: 'Barjanska cesta',
+      vrsta: 'obnova',
+      material: 'barva',
+      rok_izvedbe: '2024-10-30',
+      nacrti: 'oznake_barjanska.pdf'
     },
     {
-      serijska: 'DN-2025-003',
-      lokacija: 'Kranj, Prešernova 5',
-      vrsta: 'Parkiranje',
-      material: 'Beton',
-      rok_izvedbe: '2025-03-01',
-      nacrti: 'PDF'
+      serijska: '936201847594',
+      lokacija: 'Dunajska cesta - odsek 3',
+      vrsta: 'novo',
+      material: 'barva',
+      rok_izvedbe: '2024-11-02',
+      nacrti: 'kolesarski_pas_dunajska.pdf'
     }
   ];
 }
@@ -97,31 +97,44 @@ export async function fetchWorkOrderDetail(serijska: string): Promise<WorkOrderD
   
   // Mock detailed data
   const mockDetails: Record<string, WorkOrderDetail> = {
-    'DN-2025-001': {
-      serijska: 'DN-2025-001',
-      naslov: 'Obnova cestišča - Celovška cesta',
-      narocnik: 'Mestna občina Ljubljana',
-      izvajalec: 'Janez Novak',
-      datum_razpisa: '2025-01-10',
-      rok_izvedbe: '2025-02-15',
-      lokacija: 'Ljubljana, Celovška 150',
-      vrsta: 'Asfaltiranje',
-      material: 'Asfalt AC 11',
-      opis_dela: 'Sanacija cestišča na odseku 200m, vključno z odstranitvijo starega asfalta in polaganjem novega. Potrebno je izvesti tudi ureditev robnikov.',
-      nacrti: 'PDF'
+    '284759301621': {
+      serijska: '284759301621',
+      naslov: 'Postavitev 3D prehoda za pešce',
+      narocnik: 'MOL',
+      izvajalec: 'JP LPT',
+      datum_razpisa: '2024-09-28',
+      rok_izvedbe: '2024-10-13',
+      lokacija: 'Zaloška cesta (pri OŠ)',
+      vrsta: 'novo',
+      material: 'plastika',
+      opis_dela: 'Izvedba termoplastične 3D iluzije prehoda za pešce.',
+      nacrti: '3d_prehod_zaloska.dwg'
     },
-    'DN-2025-002': {
-      serijska: 'DN-2025-002',
-      naslov: 'Ureditev mestnega trga',
-      narocnik: 'Mestna občina Maribor',
-      izvajalec: 'Ana Kovač',
-      datum_razpisa: '2025-01-12',
-      rok_izvedbe: '2025-02-20',
-      lokacija: 'Maribor, Titova 20',
-      vrsta: 'Tlakovanje',
-      material: 'Granitne kocke',
-      opis_dela: 'Popolna obnova tlakovanja mestnega trga z granitnimi kockami. Površina 500m². Vključuje pripravo podlage in polaganje kock v vzorcu.',
-      nacrti: 'PDF'
+    '510948372605': {
+      serijska: '510948372605',
+      naslov: 'Obnova talnih oznak na križišču Barjanska/Izanska',
+      narocnik: 'MOL',
+      izvajalec: 'SIGNA',
+      datum_razpisa: '2024-10-15',
+      rok_izvedbe: '2024-10-30',
+      lokacija: 'Barjanska cesta',
+      vrsta: 'obnova',
+      material: 'barva',
+      opis_dela: 'Ponovno barvanje smernih in robnih črt ter puščic.',
+      nacrti: 'oznake_barjanska.pdf'
+    },
+    '936201847594': {
+      serijska: '936201847594',
+      naslov: 'Označitev novih kolesarskih pasov',
+      narocnik: 'MOL',
+      izvajalec: 'SIGNA',
+      datum_razpisa: '2024-10-18',
+      rok_izvedbe: '2024-11-02',
+      lokacija: 'Dunajska cesta - odsek 3',
+      vrsta: 'novo',
+      material: 'barva',
+      opis_dela: 'Barvanje posebnih kolesarskih pasov z zeleno cestno barvo.',
+      nacrti: 'kolesarski_pas_dunajska.pdf'
     }
   };
   
