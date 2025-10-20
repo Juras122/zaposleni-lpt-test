@@ -30,13 +30,6 @@ export const Header = () => {
           >
             LPT
           </a>
-          <Button 
-            variant="ghost" 
-            onClick={() => navigate('/user-management')}
-            className="text-sm font-medium"
-          >
-            Uporabniki
-          </Button>
           <Button variant="ghost" onClick={handleLogout}>
             Odjava
           </Button>
