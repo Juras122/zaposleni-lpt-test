@@ -7,6 +7,8 @@ import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Input } from '@/components/ui/input';
 import { fetchUserProfile, fetchWorkOrderDetail } from '@/lib/api';
 import { UserProfile, WorkOrderDetail } from '@/types';
 import { ArrowLeft, Calendar, MapPin, Package, User, FileText, Plus } from 'lucide-react';
@@ -21,6 +23,9 @@ const WorkOrderDetailPage = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [popisDela, setPopisDela] = useState('');
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [vrstaObelezbe, setVrstaObelezbe] = useState<string>('');
+  const [dolzina, setDolzina] = useState('');
+  const [steviloElementov, setSteviloElementov] = useState('');
 
   useEffect(() => {
     const loadData = async () => {
@@ -59,14 +64,17 @@ const WorkOrderDetailPage = () => {
   }, [serijska, searchParams, navigate]);
 
   const handleAddPopis = () => {
-    if (!popisDela.trim()) {
-      toast.error('Prosim vnesite popis dela');
+    if (!vrstaObelezbe) {
+      toast.error('Prosim izberite vrsto označbe');
       return;
     }
     
     // Here you would typically save to backend
     toast.success('Popis dela uspešno dodan');
     setPopisDela('');
+    setVrstaObelezbe('');
+    setDolzina('');
+    setSteviloElementov('');
     setIsDialogOpen(false);
   };
 
@@ -215,22 +223,76 @@ const WorkOrderDetailPage = () => {
                     </DialogTrigger>
                     <DialogContent className="sm:max-w-[525px]">
                       <DialogHeader>
-                        <DialogTitle>Dodaj popis dela</DialogTitle>
+                        <DialogTitle>Dodaj popis</DialogTitle>
                         <DialogDescription>
-                          Vnesite opis opravljenega dela na tem delovnem nalogu.
+                          Izberi vrsto označbe
                         </DialogDescription>
                       </DialogHeader>
                       <div className="grid gap-4 py-4">
                         <div className="grid gap-2">
-                          <Label htmlFor="popis">Popis dela</Label>
-                          <Textarea
-                            id="popis"
-                            placeholder="Opišite opravljeno delo..."
-                            value={popisDela}
-                            onChange={(e) => setPopisDela(e.target.value)}
-                            className="min-h-[150px]"
-                          />
+                          <Select value={vrstaObelezbe} onValueChange={setVrstaObelezbe}>
+                            <SelectTrigger>
+                              <SelectValue placeholder="Izberite vrsto označbe" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="STOP">STOP</SelectItem>
+                              <SelectItem value="STOP (0,5x0,3)">STOP (0,5x0,3)</SelectItem>
+                              <SelectItem value="PREHOD ZA PEŠCE (NAVADEN)">PREHOD ZA PEŠCE (NAVADEN)</SelectItem>
+                              <SelectItem value="PREHOD ZA PEŠCE (KOCKE)">PREHOD ZA PEŠCE (KOCKE)</SelectItem>
+                            </SelectContent>
+                          </Select>
                         </div>
+
+                        {vrstaObelezbe === 'STOP' && (
+                          <div className="grid gap-2">
+                            <Label htmlFor="dolzina">Dolžina</Label>
+                            <Input
+                              id="dolzina"
+                              type="number"
+                              placeholder="Vnesite dolžino"
+                              value={dolzina}
+                              onChange={(e) => setDolzina(e.target.value)}
+                            />
+                          </div>
+                        )}
+
+                        {vrstaObelezbe === 'STOP (0,5x0,3)' && (
+                          <div className="grid gap-2">
+                            <Label htmlFor="steviloElementov">Število elementov</Label>
+                            <Input
+                              id="steviloElementov"
+                              type="number"
+                              placeholder="Vnesite število elementov"
+                              value={steviloElementov}
+                              onChange={(e) => setSteviloElementov(e.target.value)}
+                            />
+                          </div>
+                        )}
+
+                        {(vrstaObelezbe === 'PREHOD ZA PEŠCE (NAVADEN)' || vrstaObelezbe === 'PREHOD ZA PEŠCE (KOCKE)') && (
+                          <>
+                            <div className="grid gap-2">
+                              <Label htmlFor="dolzina">Dolžina</Label>
+                              <Input
+                                id="dolzina"
+                                type="number"
+                                placeholder="Vnesite dolžino"
+                                value={dolzina}
+                                onChange={(e) => setDolzina(e.target.value)}
+                              />
+                            </div>
+                            <div className="grid gap-2">
+                              <Label htmlFor="steviloElementov">Število elementov</Label>
+                              <Input
+                                id="steviloElementov"
+                                type="number"
+                                placeholder="Vnesite število elementov"
+                                value={steviloElementov}
+                                onChange={(e) => setSteviloElementov(e.target.value)}
+                              />
+                            </div>
+                          </>
+                        )}
                       </div>
                       <DialogFooter>
                         <Button variant="outline" onClick={() => setIsDialogOpen(false)}>
