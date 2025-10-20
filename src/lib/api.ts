@@ -67,5 +67,11 @@ export async function fetchWorkOrderDetail(serijska: string): Promise<WorkOrderD
   return handleResponse<WorkOrderDetail>(response);
 }
 
-// Opomba: Funkcijo fetchWarehouseItems() sem izpustil, ker za njo ni ustrezne API končne točke v index.js. 
-// Če jo želite uporabiti, boste morali dodati: app.get('/api/warehouse', ...) v index.js
+// Funkcija 6: Pridobivanje predmetov iz skladišča
+export async function fetchWarehouseItems(): Promise<WarehouseItem[]> {
+  // Klic na: https://zaposleni-lptt.onrender.com/api/warehouse
+  const response = await fetch(`${BASE_URL}/warehouse`);
+  
+  // Backend obravnava logiko za pridobivanje iz Postgresql (glej index.js -> app.get('/api/warehouse'))
+  return handleResponse<WarehouseItem[]>(response);
+}
