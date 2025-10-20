@@ -1,52 +1,43 @@
 import { UserProfile, WorkHour, WorkOrder, WorkOrderDetail } from '@/types';
 
-// Mock API functions - replace with actual API calls when backend is ready
+const API_BASE_URL = 'https://zaposleni-lptt.onrender.com/api';
+
 export async function fetchUserProfile(userId: string): Promise<UserProfile> {
-  // Simulate API call
-  await new Promise(resolve => setTimeout(resolve, 300));
-  
-  // Mock data for demonstration
-  const mockProfiles: Record<string, UserProfile> = {
-    '1': {
-      id: '1',
-      ime: 'Janez Novak',
-      username: 'jnovak',
-      naziv: 'Vodja Projekta',
-      title: 'Vodja Projekta',
-      email: 'janez.novak@lpt.si',
-      telefon: '+386 41 234 567'
-    },
-    '2': {
-      id: '2',
-      ime: 'Ana Kovač',
-      username: 'akovac',
-      naziv: 'Inženir',
-      title: 'Inženir',
-      email: 'ana.kovac@lpt.si',
-      telefon: '+386 41 345 678'
+  try {
+    const response = await fetch(`${API_BASE_URL}/profiles/${userId}`);
+    
+    if (!response.ok) {
+      if (response.status === 404) {
+        throw new Error('Profil ni najden');
+      }
+      throw new Error('Napaka pri pridobivanju profila');
     }
-  };
-  
-  const profile = mockProfiles[userId];
-  if (!profile) {
-    throw new Error('Profil ni najden');
+    
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error('Error fetching user profile:', error);
+    throw error;
   }
-  
-  return profile;
 }
 
 export async function fetchWorkHours(userId: string): Promise<WorkHour[]> {
-  // Simulate API call
-  await new Promise(resolve => setTimeout(resolve, 200));
-  
-  // Mock data
-  return [
-    { id: '1', datum: '2025-01-15', dan: 'Sreda', prihod: '08:00', odhod: '16:00', stevilo: 8 },
-    { id: '2', datum: '2025-01-16', dan: 'Četrtek', prihod: '07:30', odhod: '15:00', stevilo: 7.5 },
-    { id: '3', datum: '2025-01-17', dan: 'Petek', prihod: '08:00', odhod: '16:00', stevilo: 8 },
-    { id: '4', datum: '2025-01-18', dan: 'Ponedeljek', prihod: '09:00', odhod: '15:00', stevilo: 6 },
-    { id: '5', datum: '2025-01-19', dan: 'Torek', prihod: '08:00', odhod: '16:30', stevilo: 8.5 }
-  ];
+  try {
+    const response = await fetch(`${API_BASE_URL}/workhours/${userId}`);
+    
+    if (!response.ok) {
+      if (response.status === 404) {
+        return [];
+      }
+      throw new Error('Napaka pri pridobivanju delovnih ur');
+    }
+    
+    const data = await response.json();
+    return Array.isArray(data) ? data : [];
+  } catch (error) {
+    console.error('Error fetching work hours:', error);
+    throw error;
+  }
 }
 
 export async function validateUserId(userId: string): Promise<boolean> {
@@ -59,89 +50,60 @@ export async function validateUserId(userId: string): Promise<boolean> {
 }
 
 export async function fetchWorkOrders(): Promise<WorkOrder[]> {
-  // Simulate API call
-  await new Promise(resolve => setTimeout(resolve, 250));
-  
-  // Mock data
-  return [
-    {
-      serijska: '284759301621',
-      lokacija: 'Zaloška cesta (pri OŠ)',
-      vrsta: 'novo',
-      material: 'plastika',
-      rok_izvedbe: '2024-10-13',
-      nacrti: '3d_prehod_zaloska.dwg'
-    },
-    {
-      serijska: '510948372605',
-      lokacija: 'Barjanska cesta',
-      vrsta: 'obnova',
-      material: 'barva',
-      rok_izvedbe: '2024-10-30',
-      nacrti: 'oznake_barjanska.pdf'
-    },
-    {
-      serijska: '936201847594',
-      lokacija: 'Dunajska cesta - odsek 3',
-      vrsta: 'novo',
-      material: 'barva',
-      rok_izvedbe: '2024-11-02',
-      nacrti: 'kolesarski_pas_dunajska.pdf'
+  try {
+    const response = await fetch(`${API_BASE_URL}/rdn`);
+    
+    if (!response.ok) {
+      throw new Error('Napaka pri pridobivanju delovnih nalogov');
     }
-  ];
+    
+    const data = await response.json();
+    const orders = Array.isArray(data) ? data : [];
+    
+    // Transform backend data to match frontend types
+    return orders.map((order: any) => ({
+      serijska: order.serijska,
+      lokacija: order.lokacija,
+      vrsta: order.vrsta,
+      material: order.material,
+      rok_izvedbe: order.r_razpisa || order.rok_izvedbe || '',
+      nacrti: order.nacrt || order.nacrti
+    }));
+  } catch (error) {
+    console.error('Error fetching work orders:', error);
+    throw error;
+  }
 }
 
 export async function fetchWorkOrderDetail(serijska: string): Promise<WorkOrderDetail> {
-  // Simulate API call
-  await new Promise(resolve => setTimeout(resolve, 250));
-  
-  // Mock detailed data
-  const mockDetails: Record<string, WorkOrderDetail> = {
-    '284759301621': {
-      serijska: '284759301621',
-      naslov: 'Postavitev 3D prehoda za pešce',
-      narocnik: 'MOL',
-      izvajalec: 'JP LPT',
-      datum_razpisa: '2024-09-28',
-      rok_izvedbe: '2024-10-13',
-      lokacija: 'Zaloška cesta (pri OŠ)',
-      vrsta: 'novo',
-      material: 'plastika',
-      opis_dela: 'Izvedba termoplastične 3D iluzije prehoda za pešce.',
-      nacrti: '3d_prehod_zaloska.dwg'
-    },
-    '510948372605': {
-      serijska: '510948372605',
-      naslov: 'Obnova talnih oznak na križišču Barjanska/Izanska',
-      narocnik: 'MOL',
-      izvajalec: 'SIGNA',
-      datum_razpisa: '2024-10-15',
-      rok_izvedbe: '2024-10-30',
-      lokacija: 'Barjanska cesta',
-      vrsta: 'obnova',
-      material: 'barva',
-      opis_dela: 'Ponovno barvanje smernih in robnih črt ter puščic.',
-      nacrti: 'oznake_barjanska.pdf'
-    },
-    '936201847594': {
-      serijska: '936201847594',
-      naslov: 'Označitev novih kolesarskih pasov',
-      narocnik: 'MOL',
-      izvajalec: 'SIGNA',
-      datum_razpisa: '2024-10-18',
-      rok_izvedbe: '2024-11-02',
-      lokacija: 'Dunajska cesta - odsek 3',
-      vrsta: 'novo',
-      material: 'barva',
-      opis_dela: 'Barvanje posebnih kolesarskih pasov z zeleno cestno barvo.',
-      nacrti: 'kolesarski_pas_dunajska.pdf'
+  try {
+    const response = await fetch(`${API_BASE_URL}/rdn/${serijska}`);
+    
+    if (!response.ok) {
+      if (response.status === 404) {
+        throw new Error('Delovni nalog ni najden');
+      }
+      throw new Error('Napaka pri pridobivanju podatkov');
     }
-  };
-  
-  const detail = mockDetails[serijska];
-  if (!detail) {
-    throw new Error('Delovni nalog ni najden');
+    
+    const data = await response.json();
+    
+    // Transform backend data to match frontend types
+    return {
+      serijska: data.serijska,
+      lokacija: data.lokacija,
+      vrsta: data.vrsta,
+      material: data.material,
+      rok_izvedbe: data.rok_izvedbe || data.r_razpisa || '',
+      nacrti: data.nacrt || data.nacrti,
+      naslov: data.naslov || '',
+      narocnik: data.narocnik || '',
+      izvajalec: data.izvajalec || '',
+      datum_razpisa: data.datum_razpisa || data.r_razpisa || '',
+      opis_dela: data.opis_dela || ''
+    };
+  } catch (error) {
+    console.error('Error fetching work order detail:', error);
+    throw error;
   }
-  
-  return detail;
 }
