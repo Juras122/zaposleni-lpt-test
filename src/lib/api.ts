@@ -1,6 +1,6 @@
 // api.ts (Posodobljena različica)
 
-import { UserProfile, WorkHour, WorkOrder, WorkOrderDetail } from '@/types';
+import { UserProfile, WorkHour, WorkOrder, WorkOrderDetail, WarehouseItem } from '@/types';
 
 // *** 1. Nastavitev baznega URL-ja ***
 const BASE_URL = 'https://zaposleni-lptt.onrender.com/api';
