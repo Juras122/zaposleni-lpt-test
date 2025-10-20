@@ -6,6 +6,7 @@ import { Label } from '@/components/ui/label';
 import { Card } from '@/components/ui/card';
 import { validateUserId } from '@/lib/api';
 import { toast } from 'sonner';
+import logoImage from '@/assets/LogoNapis.png';
 
 const Login = () => {
   const [userId, setUserId] = useState('');
@@ -44,8 +45,12 @@ const Login = () => {
     <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-background via-secondary/30 to-background p-4">
       <Card className="w-full max-w-md p-8 shadow-lg">
         <div className="mb-8 text-center">
-          <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-xl bg-primary">
-            <span className="text-2xl font-bold text-primary-foreground">LPT</span>
+          <div className="mx-auto mb-6">
+            <img 
+              src={logoImage} 
+              alt="LPT Logo" 
+              className="mx-auto h-16"
+            />
           </div>
           <h1 className="text-3xl font-bold">Prijava</h1>
           <p className="mt-2 text-sm text-muted-foreground">
