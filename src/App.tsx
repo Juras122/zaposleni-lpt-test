@@ -9,7 +9,6 @@ import WorkHours from "./pages/WorkHours";
 import WorkOrders from "./pages/WorkOrders";
 import WorkOrderDetail from "./pages/WorkOrderDetail";
 import Warehouse from "./pages/Warehouse";
-import UserManagement from "./pages/UserManagement";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -27,7 +26,6 @@ const App = () => (
           <Route path="/work-orders" element={<WorkOrders />} />
           <Route path="/work-order/:serijska" element={<WorkOrderDetail />} />
           <Route path="/warehouse" element={<Warehouse />} />
-          <Route path="/user-management" element={<UserManagement />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
