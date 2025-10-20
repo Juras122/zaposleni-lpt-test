@@ -1,5 +1,6 @@
 import { Button } from '@/components/ui/button';
 import { useNavigate } from 'react-router-dom';
+import { SidebarTrigger } from '@/components/ui/sidebar';
 import logoImage from '@/assets/LogoNapis.png';
 
 export const Header = () => {
@@ -13,7 +14,8 @@ export const Header = () => {
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-card shadow-sm">
       <div className="container flex h-16 items-center justify-between px-4">
-        <div className="flex items-center">
+        <div className="flex items-center gap-4">
+          <SidebarTrigger />
           <img 
             src={logoImage} 
             alt="LPT Logo" 
@@ -22,18 +24,6 @@ export const Header = () => {
         </div>
         
         <nav className="flex items-center gap-6">
-          <Button variant="ghost" onClick={() => navigate('/profile')}>
-            Profil
-          </Button>
-          <Button variant="ghost" onClick={() => navigate('/work-hours')}>
-            Delovne ure
-          </Button>
-          <Button variant="ghost" onClick={() => navigate('/work-orders')}>
-            Delovni nalogi
-          </Button>
-          <Button variant="ghost" onClick={() => navigate('/warehouse')}>
-            Skladišče
-          </Button>
           <a 
             href="https://www.lpt.si/" 
             className="text-sm font-medium text-muted-foreground transition-smooth hover:text-foreground"

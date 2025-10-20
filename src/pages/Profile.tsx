@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import { Header } from '@/components/Header';
+import { Layout } from '@/components/Layout';
 import { ProfileSidebar } from '@/components/ProfileSidebar';
 import { PersonalStats } from '@/components/PersonalStats';
 import { StatsCard } from '@/components/StatsCard';
@@ -77,9 +77,7 @@ const Profile = () => {
   const totalWorkHours = workHours.reduce((sum, wh) => sum + wh.stevilo, 0);
 
   return (
-    <div className="min-h-screen bg-background">
-      <Header />
-      
+    <Layout>
       <div className="container mx-auto p-4 lg:p-8">
         <div className="flex flex-col gap-6 lg:flex-row">
           <ProfileSidebar profile={profile} />
@@ -141,7 +139,7 @@ const Profile = () => {
           </main>
         </div>
       </div>
-    </div>
+    </Layout>
   );
 };
 
