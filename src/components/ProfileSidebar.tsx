@@ -1,15 +1,16 @@
 import { UserProfile } from '@/types';
-import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { User, Clock, FileText, Package, Users, Calculator, DollarSign } from 'lucide-react';
 
 interface ProfileSidebarProps {
   profile: UserProfile;
+  onProfileActive?: (isActive: boolean) => void;
 }
 
-export const ProfileSidebar = ({ profile }: ProfileSidebarProps) => {
+export const ProfileSidebar = ({ profile, onProfileActive }: ProfileSidebarProps) => {
   const currentPath = window.location.pathname;
   const userId = profile.id;
+  const isProfileActive = currentPath === '/profile';
 
   const menuItems = [
     { id: 'profil', label: 'Profil', icon: User, path: `/profile?id=${userId}`, active: currentPath === '/profile' },
@@ -32,9 +33,6 @@ export const ProfileSidebar = ({ profile }: ProfileSidebarProps) => {
             </div>
             <h2 className="text-xl font-semibold">{profile.ime}</h2>
             <p className="mt-1 text-sm text-muted-foreground">{profile.naziv}</p>
-            <Button variant="outline" className="mt-4 w-full">
-              Uredi Profil
-            </Button>
           </div>
         </Card>
 
@@ -53,6 +51,8 @@ export const ProfileSidebar = ({ profile }: ProfileSidebarProps) => {
                       ? 'bg-primary text-primary-foreground'
                       : 'text-muted-foreground hover:bg-accent hover:text-accent-foreground'
                   }`}
+                  onMouseEnter={() => item.id === 'profil' && onProfileActive?.(true)}
+                  onMouseLeave={() => item.id === 'profil' && onProfileActive?.(false)}
                 >
                   <Icon className="h-4 w-4" />
                   <span className="flex-1">{item.label}</span>

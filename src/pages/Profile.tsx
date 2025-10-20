@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { Header } from '@/components/Header';
 import { ProfileSidebar } from '@/components/ProfileSidebar';
+import { PersonalStats } from '@/components/PersonalStats';
 import { StatsCard } from '@/components/StatsCard';
 import { Card } from '@/components/ui/card';
 import { fetchUserProfile, fetchWorkHours } from '@/lib/api';
@@ -15,6 +16,9 @@ const Profile = () => {
   const [profile, setProfile] = useState<UserProfile | null>(null);
   const [workHours, setWorkHours] = useState<WorkHour[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [showStats, setShowStats] = useState(false);
+  const currentPath = window.location.pathname;
+  const isProfilePage = currentPath === '/profile';
 
   useEffect(() => {
     const loadProfile = async () => {
@@ -58,6 +62,10 @@ const Profile = () => {
     loadProfile();
   }, [searchParams, navigate]);
 
+  useEffect(() => {
+    setShowStats(isProfilePage);
+  }, [isProfilePage]);
+
   if (isLoading) {
     return (
       <div className="flex min-h-screen items-center justify-center">
@@ -81,7 +89,13 @@ const Profile = () => {
       
       <div className="container mx-auto p-4 lg:p-8">
         <div className="flex flex-col gap-6 lg:flex-row">
-          <ProfileSidebar profile={profile} />
+          <div className="space-y-4">
+            <ProfileSidebar 
+              profile={profile} 
+              onProfileActive={(isActive) => setShowStats(isActive || isProfilePage)}
+            />
+            {showStats && <PersonalStats workHours={workHours} />}
+          </div>
           
           <main className="flex-1 space-y-6">
             <div>
