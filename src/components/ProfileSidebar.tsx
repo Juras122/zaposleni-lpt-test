@@ -1,6 +1,7 @@
 import { UserProfile } from '@/types';
 import { Card } from '@/components/ui/card';
 import { User, Clock, FileText, Package, Users, Calculator, DollarSign } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 interface ProfileSidebarProps {
   profile: UserProfile;
@@ -38,21 +39,51 @@ export const ProfileSidebar = ({ profile }: ProfileSidebarProps) => {
           <nav className="space-y-1">
             {menuItems.map((item) => {
               const Icon = item.icon;
+              const className = `flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-smooth ${
+                item.active
+                  ? 'bg-primary text-primary-foreground'
+                  : 'text-muted-foreground hover:bg-accent hover:text-accent-foreground'
+              }`;
+
+              // External link
+              if (item.external) {
+                return (
+                  <a
+                    key={item.id}
+                    href={item.external}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className={className}
+                  >
+                    <Icon className="h-4 w-4" />
+                    <span className="flex-1">{item.label}</span>
+                  </a>
+                );
+              }
+
+              // Internal link
+              if (item.path) {
+                return (
+                  <Link
+                    key={item.id}
+                    to={item.path}
+                    className={className}
+                  >
+                    <Icon className="h-4 w-4" />
+                    <span className="flex-1">{item.label}</span>
+                  </Link>
+                );
+              }
+
+              // Disabled item
               return (
-              <a
+                <div
                   key={item.id}
-                  href={item.external || item.path || '#'}
-                  target={item.external ? '_blank' : undefined}
-                  rel={item.external ? 'noopener noreferrer' : undefined}
-                  className={`flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-smooth ${
-                    item.active
-                      ? 'bg-primary text-primary-foreground'
-                      : 'text-muted-foreground hover:bg-accent hover:text-accent-foreground'
-                  }`}
+                  className={`${className} opacity-50 cursor-not-allowed`}
                 >
                   <Icon className="h-4 w-4" />
                   <span className="flex-1">{item.label}</span>
-                </a>
+                </div>
               );
             })}
           </nav>
