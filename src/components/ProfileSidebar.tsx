@@ -1,0 +1,64 @@
+import { UserProfile } from '@/types';
+import { Button } from '@/components/ui/button';
+import { Card } from '@/components/ui/card';
+import { User, Clock, FileText, Package, Users, Calculator, DollarSign } from 'lucide-react';
+
+interface ProfileSidebarProps {
+  profile: UserProfile;
+}
+
+export const ProfileSidebar = ({ profile }: ProfileSidebarProps) => {
+  const menuItems = [
+    { id: 'profil', label: 'Profil', icon: User, active: true },
+    { id: 'whm', label: 'Evidenca delovnega časa', icon: Clock },
+    { id: 'sdms', label: 'SDMS', icon: FileText, external: 'https://sdms.lpt.si' },
+    { id: 'pdn', label: 'Pregled delovnih nalogov', icon: FileText },
+    { id: 'skld', label: 'Skladišče', icon: Package },
+    { id: 'upr', label: 'Upravljanje uporabnikov', icon: Users },
+    { id: 'obrc', label: 'Obračun', icon: Calculator },
+    { id: 'finc', label: 'Finance', icon: DollarSign }
+  ];
+
+  return (
+    <aside className="w-full lg:w-80 flex-shrink-0">
+      <div className="space-y-4">
+        <Card className="p-6 shadow-elegant">
+          <div className="text-center">
+            <div className="mx-auto mb-4 flex h-20 w-20 items-center justify-center rounded-full bg-primary/10">
+              <User className="h-10 w-10 text-primary" />
+            </div>
+            <h2 className="text-xl font-semibold">{profile.ime}</h2>
+            <p className="mt-1 text-sm text-muted-foreground">{profile.naziv}</p>
+            <Button variant="outline" className="mt-4 w-full">
+              Uredi Profil
+            </Button>
+          </div>
+        </Card>
+
+        <Card className="p-4 shadow-elegant">
+          <nav className="space-y-1">
+            {menuItems.map((item) => {
+              const Icon = item.icon;
+              return (
+                <a
+                  key={item.id}
+                  href={item.external || '#'}
+                  target={item.external ? '_blank' : undefined}
+                  rel={item.external ? 'noopener noreferrer' : undefined}
+                  className={`flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-smooth ${
+                    item.active
+                      ? 'bg-primary text-primary-foreground'
+                      : 'text-muted-foreground hover:bg-accent hover:text-accent-foreground'
+                  }`}
+                >
+                  <Icon className="h-4 w-4" />
+                  <span className="flex-1">{item.label}</span>
+                </a>
+              );
+            })}
+          </nav>
+        </Card>
+      </div>
+    </aside>
+  );
+};
