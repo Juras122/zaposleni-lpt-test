@@ -12,7 +12,7 @@ export interface WorkHour {
   dan: string;
   prihod: string;
   odhod: string;
-  stevilo: number;
+  stevilo: string;
 }
 
 export interface UserStats {

@@ -74,7 +74,10 @@ const Profile = () => {
     return null;
   }
 
-  const totalWorkHours = workHours.reduce((sum, wh) => sum + wh.stevilo, 0);
+  const totalWorkHours = workHours.reduce((sum, wh) => {
+    const hours = parseFloat(wh.stevilo) || 0;
+    return sum + hours;
+  }, 0);
 
   return (
     <div className="min-h-screen bg-background">
@@ -97,7 +100,7 @@ const Profile = () => {
             <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
               <StatsCard
                 title="Evidenca delovnega časa"
-                value={`${totalWorkHours}h`}
+                value={`${totalWorkHours.toFixed(1)}h`}
                 icon={Clock}
                 description="Skupno število ur ta mesec"
               />

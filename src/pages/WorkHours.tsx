@@ -72,7 +72,10 @@ const WorkHours = () => {
     return null;
   }
 
-  const totalHours = workHours.reduce((sum, wh) => sum + wh.stevilo, 0);
+  const totalHours = workHours.reduce((sum, wh) => {
+    const hours = parseFloat(wh.stevilo) || 0;
+    return sum + hours;
+  }, 0);
 
   return (
     <div className="min-h-screen bg-background">
@@ -86,7 +89,7 @@ const WorkHours = () => {
             <div>
               <h1 className="text-3xl font-bold">Evidenca delovnega časa</h1>
               <p className="mt-2 text-muted-foreground">
-                Skupno ur tega meseca: <span className="font-semibold text-primary">{totalHours}h</span>
+                Skupno ur tega meseca: <span className="font-semibold text-primary">{totalHours.toFixed(1)}h</span>
               </p>
             </div>
 
