@@ -75,3 +75,12 @@ export async function fetchWarehouseItems(): Promise<WarehouseItem[]> {
   // Backend obravnava logiko za pridobivanje iz Postgresql (glej index.js -> app.get('/api/warehouse'))
   return handleResponse<WarehouseItem[]>(response);
 }
+
+// Funkcija 7: Pridobivanje vseh uporabnikov
+export async function fetchAllUsers(): Promise<UserProfile[]> {
+  // Klic na: https://zaposleni-lptt.onrender.com/api/profiles
+  const response = await fetch(`${BASE_URL}/profiles`);
+  
+  // Backend obravnava logiko za pridobivanje vseh profilov iz Postgresql
+  return handleResponse<UserProfile[]>(response);
+}
