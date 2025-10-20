@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
-import { Layout } from '@/components/Layout';
+import { Header } from '@/components/Header';
 import { ProfileSidebar } from '@/components/ProfileSidebar';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -88,7 +88,9 @@ const WorkOrderDetailPage = () => {
   const userId = searchParams.get('id') || sessionStorage.getItem('loggedInUserId');
 
   return (
-    <Layout>
+    <div className="min-h-screen bg-background">
+      <Header />
+      
       <div className="container mx-auto p-4 lg:p-8">
         <div className="flex flex-col gap-6 lg:flex-row">
           <ProfileSidebar profile={profile} />
@@ -247,7 +249,7 @@ const WorkOrderDetailPage = () => {
           </main>
         </div>
       </div>
-    </Layout>
+    </div>
   );
 };
 

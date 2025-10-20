@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { fetchWarehouseItems } from '@/lib/api';
-import { Layout } from '@/components/Layout';
+import { Header } from '@/components/Header';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import {
@@ -34,8 +34,10 @@ export default function Warehouse() {
   };
 
   return (
-    <Layout>
-      <div className="container mx-auto px-4 py-8">
+    <div className="min-h-screen bg-background">
+      <Header />
+      
+      <main className="container mx-auto px-4 py-8">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-4">
             <CardTitle className="text-2xl font-bold">Skladišče</CardTitle>
@@ -103,7 +105,7 @@ export default function Warehouse() {
             )}
           </CardContent>
         </Card>
-      </div>
-    </Layout>
+      </main>
+    </div>
   );
 }
