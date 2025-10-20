@@ -8,11 +8,14 @@ interface ProfileSidebarProps {
 }
 
 export const ProfileSidebar = ({ profile }: ProfileSidebarProps) => {
+  const currentPath = window.location.pathname;
+  const userId = profile.id;
+
   const menuItems = [
-    { id: 'profil', label: 'Profil', icon: User, active: true },
-    { id: 'whm', label: 'Evidenca delovnega časa', icon: Clock },
+    { id: 'profil', label: 'Profil', icon: User, path: `/profile?id=${userId}`, active: currentPath === '/profile' },
+    { id: 'whm', label: 'Evidenca delovnega časa', icon: Clock, path: `/work-hours?id=${userId}`, active: currentPath === '/work-hours' },
     { id: 'sdms', label: 'SDMS', icon: FileText, external: 'https://sdms.lpt.si' },
-    { id: 'pdn', label: 'Pregled delovnih nalogov', icon: FileText },
+    { id: 'pdn', label: 'Pregled delovnih nalogov', icon: FileText, path: `/work-orders?id=${userId}`, active: currentPath === '/work-orders' || currentPath.startsWith('/work-order/') },
     { id: 'skld', label: 'Skladišče', icon: Package },
     { id: 'upr', label: 'Upravljanje uporabnikov', icon: Users },
     { id: 'obrc', label: 'Obračun', icon: Calculator },
@@ -40,9 +43,9 @@ export const ProfileSidebar = ({ profile }: ProfileSidebarProps) => {
             {menuItems.map((item) => {
               const Icon = item.icon;
               return (
-                <a
+              <a
                   key={item.id}
-                  href={item.external || '#'}
+                  href={item.external || item.path || '#'}
                   target={item.external ? '_blank' : undefined}
                   rel={item.external ? 'noopener noreferrer' : undefined}
                   className={`flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-smooth ${

@@ -10,12 +10,32 @@ export interface UserProfile {
 
 export interface WorkHour {
   id: string;
+  datum: string;
+  dan: string;
+  prihod: string;
+  odhod: string;
   stevilo: number;
-  datum?: string;
 }
 
 export interface UserStats {
   workHours: number;
   messages: number;
   completedTasks: number;
+}
+
+export interface WorkOrder {
+  serijska: string;
+  lokacija: string;
+  vrsta: string;
+  material: string;
+  rok_izvedbe: string;
+  nacrti?: string;
+}
+
+export interface WorkOrderDetail extends WorkOrder {
+  naslov: string;
+  narocnik: string;
+  izvajalec: string;
+  datum_razpisa: string;
+  opis_dela: string;
 }
