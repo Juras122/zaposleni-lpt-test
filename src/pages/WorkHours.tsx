@@ -42,8 +42,15 @@ const WorkHours = () => {
           fetchWorkHours(userId)
         ]);
         
+        // Sort work hours by date, newest first
+        const sortedWorkHours = [...workHoursData].sort((a, b) => {
+          const dateA = new Date(a.datum.split('.').reverse().join('-'));
+          const dateB = new Date(b.datum.split('.').reverse().join('-'));
+          return dateB.getTime() - dateA.getTime();
+        });
+        
         setProfile(profileData);
-        setWorkHours(workHoursData);
+        setWorkHours(sortedWorkHours);
       } catch (error) {
         console.error('Error loading data:', error);
         toast.error('Napaka pri nalaganju podatkov');
