@@ -6,8 +6,11 @@ import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { fetchUserProfile, fetchWorkOrders } from '@/lib/api';
 import { UserProfile, WorkOrder } from '@/types';
-import { FileText, MapPin, Package } from 'lucide-react';
+import { FileText, MapPin, Package, ArrowUpDown, ArrowUp, ArrowDown } from 'lucide-react';
 import { toast } from 'sonner';
+
+type SortField = 'serijska' | 'status' | 'lokacija' | 'vrsta' | 'material' | 'r_razpisa';
+type SortDirection = 'asc' | 'desc' | null;
 
 const WorkOrders = () => {
   const [searchParams] = useSearchParams();
@@ -15,6 +18,8 @@ const WorkOrders = () => {
   const [profile, setProfile] = useState<UserProfile | null>(null);
   const [workOrders, setWorkOrders] = useState<WorkOrder[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [sortField, setSortField] = useState<SortField | null>(null);
+  const [sortDirection, setSortDirection] = useState<SortDirection>(null);
 
   useEffect(() => {
     const loadData = async () => {
@@ -61,6 +66,53 @@ const WorkOrders = () => {
     navigate(`/work-order/${serijska}?id=${userId}`);
   };
 
+  const handleSort = (field: SortField) => {
+    if (sortField === field) {
+      if (sortDirection === 'asc') {
+        setSortDirection('desc');
+      } else if (sortDirection === 'desc') {
+        setSortDirection(null);
+        setSortField(null);
+      }
+    } else {
+      setSortField(field);
+      setSortDirection('asc');
+    }
+  };
+
+  const getSortedOrders = () => {
+    if (!sortField || !sortDirection) {
+      return workOrders;
+    }
+
+    return [...workOrders].sort((a, b) => {
+      let aValue = a[sortField];
+      let bValue = b[sortField];
+
+      // Convert date strings to comparable format (DD.MM.YYYY to YYYY-MM-DD)
+      if (sortField === 'r_razpisa') {
+        const aDate = aValue.split('.').reverse().join('-');
+        const bDate = bValue.split('.').reverse().join('-');
+        aValue = aDate;
+        bValue = bDate;
+      }
+
+      if (aValue < bValue) return sortDirection === 'asc' ? -1 : 1;
+      if (aValue > bValue) return sortDirection === 'asc' ? 1 : -1;
+      return 0;
+    });
+  };
+
+  const SortIcon = ({ field }: { field: SortField }) => {
+    if (sortField !== field) {
+      return <ArrowUpDown className="ml-2 h-4 w-4" />;
+    }
+    if (sortDirection === 'asc') {
+      return <ArrowUp className="ml-2 h-4 w-4" />;
+    }
+    return <ArrowDown className="ml-2 h-4 w-4" />;
+  };
+
   if (isLoading) {
     return (
       <div className="flex min-h-screen items-center justify-center">
@@ -97,18 +149,66 @@ const WorkOrders = () => {
                 <table className="w-full">
                   <thead>
                     <tr className="border-b bg-muted/50">
-                      <th className="px-6 py-4 text-left text-sm font-semibold">Serijska številka</th>
-                      <th className="px-6 py-4 text-left text-sm font-semibold">Status</th>
-                      <th className="px-6 py-4 text-left text-sm font-semibold">Lokacija</th>
-                      <th className="px-6 py-4 text-left text-sm font-semibold">Vrsta</th>
-                      <th className="px-6 py-4 text-left text-sm font-semibold">Material</th>
-                      <th className="px-6 py-4 text-left text-sm font-semibold">Datum razpisa</th>
+                      <th 
+                        className="px-6 py-4 text-left text-sm font-semibold cursor-pointer hover:bg-muted/70 transition-smooth"
+                        onClick={() => handleSort('serijska')}
+                      >
+                        <div className="flex items-center">
+                          Serijska številka
+                          <SortIcon field="serijska" />
+                        </div>
+                      </th>
+                      <th 
+                        className="px-6 py-4 text-left text-sm font-semibold cursor-pointer hover:bg-muted/70 transition-smooth"
+                        onClick={() => handleSort('status')}
+                      >
+                        <div className="flex items-center">
+                          Status
+                          <SortIcon field="status" />
+                        </div>
+                      </th>
+                      <th 
+                        className="px-6 py-4 text-left text-sm font-semibold cursor-pointer hover:bg-muted/70 transition-smooth"
+                        onClick={() => handleSort('lokacija')}
+                      >
+                        <div className="flex items-center">
+                          Lokacija
+                          <SortIcon field="lokacija" />
+                        </div>
+                      </th>
+                      <th 
+                        className="px-6 py-4 text-left text-sm font-semibold cursor-pointer hover:bg-muted/70 transition-smooth"
+                        onClick={() => handleSort('vrsta')}
+                      >
+                        <div className="flex items-center">
+                          Vrsta
+                          <SortIcon field="vrsta" />
+                        </div>
+                      </th>
+                      <th 
+                        className="px-6 py-4 text-left text-sm font-semibold cursor-pointer hover:bg-muted/70 transition-smooth"
+                        onClick={() => handleSort('material')}
+                      >
+                        <div className="flex items-center">
+                          Material
+                          <SortIcon field="material" />
+                        </div>
+                      </th>
+                      <th 
+                        className="px-6 py-4 text-left text-sm font-semibold cursor-pointer hover:bg-muted/70 transition-smooth"
+                        onClick={() => handleSort('r_razpisa')}
+                      >
+                        <div className="flex items-center">
+                          Datum razpisa
+                          <SortIcon field="r_razpisa" />
+                        </div>
+                      </th>
                       <th className="px-6 py-4 text-left text-sm font-semibold">Načrt</th>
                       <th className="px-6 py-4 text-right text-sm font-semibold">Akcije</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y">
-                    {workOrders.map((order) => (
+                    {getSortedOrders().map((order) => (
                       <tr key={order.serijska} className="transition-smooth hover:bg-muted/30">
                         <td className="px-6 py-4">
                           <span className="font-mono text-sm font-semibold text-primary">
