@@ -79,12 +79,7 @@ const Login = () => {
           >
             {isLoading ? 'Prijavljanje...' : 'Prijava'}
           </Button>
-
-          <div className="rounded-lg bg-muted/50 p-4">
-            <p className="text-xs text-muted-foreground">
-              <strong>Demo računi:</strong> Uporabite ID "1" ali "2" za testiranje
-            </p>
-          </div>
+          
         </form>
       </Card>
     </div>
