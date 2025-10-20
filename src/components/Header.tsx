@@ -22,18 +22,6 @@ export const Header = () => {
         </div>
         
         <nav className="flex items-center gap-6">
-          <Button variant="ghost" onClick={() => navigate('/profile')}>
-            Profil
-          </Button>
-          <Button variant="ghost" onClick={() => navigate('/work-hours')}>
-            Delovne ure
-          </Button>
-          <Button variant="ghost" onClick={() => navigate('/work-orders')}>
-            Delovni nalogi
-          </Button>
-          <Button variant="ghost" onClick={() => navigate('/warehouse')}>
-            Skladišče
-          </Button>
           <a 
             href="https://www.lpt.si/" 
             className="text-sm font-medium text-muted-foreground transition-smooth hover:text-foreground"
