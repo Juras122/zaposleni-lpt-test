@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { fetchUserProfile, fetchWorkHours } from '@/lib/api';
 import { UserProfile, WorkHour } from '@/types';
-import { Clock, Play, Square } from 'lucide-react';
+import { Clock } from 'lucide-react';
 import { toast } from 'sonner';
 
 const WorkHours = () => {
@@ -56,13 +56,6 @@ const WorkHours = () => {
     loadData();
   }, [searchParams, navigate]);
 
-  const handleClockIn = () => {
-    toast.success('Delo prijavljeno!');
-  };
-
-  const handleClockOut = () => {
-    toast.success('Delo odjavljeno!');
-  };
 
   if (isLoading) {
     return (
@@ -90,23 +83,11 @@ const WorkHours = () => {
           <ProfileSidebar profile={profile} />
           
           <main className="flex-1 space-y-6">
-            <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-              <div>
-                <h1 className="text-3xl font-bold">Evidenca delovnega časa</h1>
-                <p className="mt-2 text-muted-foreground">
-                  Skupno ur tega meseca: <span className="font-semibold text-primary">{totalHours}h</span>
-                </p>
-              </div>
-              <div className="flex gap-3">
-                <Button onClick={handleClockIn} className="gap-2">
-                  <Play className="h-4 w-4" />
-                  Prijavi delo
-                </Button>
-                <Button onClick={handleClockOut} variant="destructive" className="gap-2">
-                  <Square className="h-4 w-4" />
-                  Odjavi delo
-                </Button>
-              </div>
+            <div>
+              <h1 className="text-3xl font-bold">Evidenca delovnega časa</h1>
+              <p className="mt-2 text-muted-foreground">
+                Skupno ur tega meseca: <span className="font-semibold text-primary">{totalHours}h</span>
+              </p>
             </div>
 
             <Card className="overflow-hidden shadow-elegant">
