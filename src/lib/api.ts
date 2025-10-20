@@ -1,4 +1,4 @@
-import { UserProfile, WorkHour, WorkOrder, WorkOrderDetail } from '@/types';
+import { UserProfile, WorkHour, WorkOrder, WorkOrderDetail, WarehouseItem } from '@/types';
 
 // Mock API functions - replace with actual API calls when backend is ready
 export async function fetchUserProfile(userId: string): Promise<UserProfile> {
@@ -144,4 +144,63 @@ export async function fetchWorkOrderDetail(serijska: string): Promise<WorkOrderD
   }
   
   return detail;
+}
+
+export async function fetchWarehouseItems(): Promise<WarehouseItem[]> {
+  // Simulate API call
+  await new Promise(resolve => setTimeout(resolve, 200));
+  
+  // Mock data
+  return [
+    {
+      id: '1',
+      serijska_koda: 'MAT-2024-001',
+      ime: 'Termoplastična barva - bela',
+      stevilo: 150,
+      enota: 'kg',
+      lokacija: 'Skladišče A-1',
+      datum_vnosa: '2024-01-10',
+      zadnja_sprememba: '2024-10-15'
+    },
+    {
+      id: '2',
+      serijska_koda: 'MAT-2024-002',
+      ime: 'Termoplastična barva - rumena',
+      stevilo: 85,
+      enota: 'kg',
+      lokacija: 'Skladišče A-1',
+      datum_vnosa: '2024-01-10',
+      zadnja_sprememba: '2024-10-12'
+    },
+    {
+      id: '3',
+      serijska_koda: 'OPR-2024-015',
+      ime: 'Stroj za črtanje Graco LineLazer',
+      stevilo: 2,
+      enota: 'kos',
+      lokacija: 'Skladišče B-3',
+      datum_vnosa: '2024-03-05',
+      zadnja_sprememba: '2024-09-20'
+    },
+    {
+      id: '4',
+      serijska_koda: 'MAT-2024-008',
+      ime: 'Refleksijska steklena kroglica',
+      stevilo: 500,
+      enota: 'kg',
+      lokacija: 'Skladišče A-2',
+      datum_vnosa: '2024-02-14',
+      zadnja_sprememba: '2024-10-18'
+    },
+    {
+      id: '5',
+      serijska_koda: 'OPR-2024-022',
+      ime: 'Merilna naprava za debelino',
+      stevilo: 5,
+      enota: 'kos',
+      lokacija: 'Skladišče B-1',
+      datum_vnosa: '2024-04-20',
+      zadnja_sprememba: '2024-10-10'
+    }
+  ];
 }

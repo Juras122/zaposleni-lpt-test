@@ -39,3 +39,14 @@ export interface WorkOrderDetail extends WorkOrder {
   datum_razpisa: string;
   opis_dela: string;
 }
+
+export interface WarehouseItem {
+  id: string;
+  serijska_koda: string;
+  ime: string;
+  stevilo: number;
+  enota: string;
+  lokacija: string;
+  datum_vnosa: string;
+  zadnja_sprememba: string;
+}
