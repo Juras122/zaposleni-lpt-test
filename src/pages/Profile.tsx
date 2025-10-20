@@ -16,9 +16,6 @@ const Profile = () => {
   const [profile, setProfile] = useState<UserProfile | null>(null);
   const [workHours, setWorkHours] = useState<WorkHour[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [showStats, setShowStats] = useState(false);
-  const currentPath = window.location.pathname;
-  const isProfilePage = currentPath === '/profile';
 
   useEffect(() => {
     const loadProfile = async () => {
@@ -62,10 +59,6 @@ const Profile = () => {
     loadProfile();
   }, [searchParams, navigate]);
 
-  useEffect(() => {
-    setShowStats(isProfilePage);
-  }, [isProfilePage]);
-
   if (isLoading) {
     return (
       <div className="flex min-h-screen items-center justify-center">
@@ -89,13 +82,7 @@ const Profile = () => {
       
       <div className="container mx-auto p-4 lg:p-8">
         <div className="flex flex-col gap-6 lg:flex-row">
-          <div className="space-y-4">
-            <ProfileSidebar 
-              profile={profile} 
-              onProfileActive={(isActive) => setShowStats(isActive || isProfilePage)}
-            />
-            {showStats && <PersonalStats workHours={workHours} />}
-          </div>
+          <ProfileSidebar profile={profile} />
           
           <main className="flex-1 space-y-6">
             <div>
@@ -150,29 +137,7 @@ const Profile = () => {
               </div>
             </Card>
 
-            {workHours.length > 0 && (
-              <Card className="p-6 shadow-elegant">
-                <h2 className="mb-4 text-xl font-semibold">Nedavne delovne ure</h2>
-                <div className="space-y-3">
-                  {workHours.slice(0, 5).map((wh) => (
-                    <div
-                      key={wh.id}
-                      className="flex items-center justify-between rounded-lg border p-3"
-                    >
-                      <div className="flex items-center gap-3">
-                        <Clock className="h-5 w-5 text-primary" />
-                        <div>
-                          <p className="font-medium">{wh.stevilo} ur</p>
-                          {wh.datum && (
-                            <p className="text-sm text-muted-foreground">{wh.datum}</p>
-                          )}
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </Card>
-            )}
+            <PersonalStats workHours={workHours} />
           </main>
         </div>
       </div>

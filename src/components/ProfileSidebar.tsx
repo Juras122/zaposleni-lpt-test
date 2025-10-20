@@ -4,13 +4,11 @@ import { User, Clock, FileText, Package, Users, Calculator, DollarSign } from 'l
 
 interface ProfileSidebarProps {
   profile: UserProfile;
-  onProfileActive?: (isActive: boolean) => void;
 }
 
-export const ProfileSidebar = ({ profile, onProfileActive }: ProfileSidebarProps) => {
+export const ProfileSidebar = ({ profile }: ProfileSidebarProps) => {
   const currentPath = window.location.pathname;
   const userId = profile.id;
-  const isProfileActive = currentPath === '/profile';
 
   const menuItems = [
     { id: 'profil', label: 'Profil', icon: User, path: `/profile?id=${userId}`, active: currentPath === '/profile' },
@@ -51,8 +49,6 @@ export const ProfileSidebar = ({ profile, onProfileActive }: ProfileSidebarProps
                       ? 'bg-primary text-primary-foreground'
                       : 'text-muted-foreground hover:bg-accent hover:text-accent-foreground'
                   }`}
-                  onMouseEnter={() => item.id === 'profil' && onProfileActive?.(true)}
-                  onMouseLeave={() => item.id === 'profil' && onProfileActive?.(false)}
                 >
                   <Icon className="h-4 w-4" />
                   <span className="flex-1">{item.label}</span>
