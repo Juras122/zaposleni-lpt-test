@@ -1,9 +1,7 @@
 export interface UserProfile {
   id: string;
   ime: string;
-  username?: string;
   naziv: string;
-  title?: string;
   email: string;
   telefon: string;
 }
@@ -25,19 +23,20 @@ export interface UserStats {
 
 export interface WorkOrder {
   serijska: string;
+  status: string;
   lokacija: string;
   vrsta: string;
   material: string;
-  rok_izvedbe: string;
-  nacrti?: string;
+  r_razpisa: string;
+  nacrt?: string;
 }
 
 export interface WorkOrderDetail extends WorkOrder {
   naslov: string;
   narocnik: string;
   izvajalec: string;
-  datum_razpisa: string;
-  opis_dela: string;
+  d_razpisa: string;
+  opis: string;
 }
 
 export interface WarehouseItem {

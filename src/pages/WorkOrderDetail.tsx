@@ -160,14 +160,14 @@ const WorkOrderDetailPage = () => {
                     <Calendar className="mt-1 h-5 w-5 text-primary" />
                     <div>
                       <p className="text-sm font-medium text-muted-foreground">Datum razpisa</p>
-                      <p className="font-medium">{orderDetail.datum_razpisa}</p>
+                      <p className="font-medium">{orderDetail.d_razpisa}</p>
                     </div>
                   </div>
                   <div className="flex items-start gap-3">
                     <Calendar className="mt-1 h-5 w-5 text-destructive" />
                     <div>
-                      <p className="text-sm font-medium text-muted-foreground">Rok izvedbe</p>
-                      <p className="font-medium text-destructive">{orderDetail.rok_izvedbe}</p>
+                      <p className="text-sm font-medium text-muted-foreground">Datum razpisa (rok)</p>
+                      <p className="font-medium text-destructive">{orderDetail.r_razpisa}</p>
                     </div>
                   </div>
                 </div>
@@ -190,13 +190,13 @@ const WorkOrderDetailPage = () => {
                       <p className="font-medium">{orderDetail.material}</p>
                     </div>
                   </div>
-                  {orderDetail.nacrti && (
+                  {orderDetail.nacrt && (
                     <div className="flex items-start gap-3">
                       <FileText className="mt-1 h-5 w-5 text-primary" />
                       <div>
-                        <p className="text-sm font-medium text-muted-foreground">Načrti</p>
+                        <p className="text-sm font-medium text-muted-foreground">Načrt</p>
                         <Button variant="link" className="h-auto p-0 font-medium">
-                          Prenesi {orderDetail.nacrti}
+                          Prenesi {orderDetail.nacrt}
                         </Button>
                       </div>
                     </div>
@@ -207,7 +207,7 @@ const WorkOrderDetailPage = () => {
               <Card className="p-6 shadow-elegant lg:col-span-2">
                 <h2 className="mb-4 text-lg font-semibold">Opis dela</h2>
                 <p className="text-sm leading-relaxed text-muted-foreground">
-                  {orderDetail.opis_dela}
+                  {orderDetail.opis}
                 </p>
               </Card>
 

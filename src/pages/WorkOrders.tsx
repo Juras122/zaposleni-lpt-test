@@ -98,11 +98,12 @@ const WorkOrders = () => {
                   <thead>
                     <tr className="border-b bg-muted/50">
                       <th className="px-6 py-4 text-left text-sm font-semibold">Serijska številka</th>
+                      <th className="px-6 py-4 text-left text-sm font-semibold">Status</th>
                       <th className="px-6 py-4 text-left text-sm font-semibold">Lokacija</th>
                       <th className="px-6 py-4 text-left text-sm font-semibold">Vrsta</th>
                       <th className="px-6 py-4 text-left text-sm font-semibold">Material</th>
-                      <th className="px-6 py-4 text-left text-sm font-semibold">Rok izvedbe</th>
-                      <th className="px-6 py-4 text-left text-sm font-semibold">Načrti</th>
+                      <th className="px-6 py-4 text-left text-sm font-semibold">Datum razpisa</th>
+                      <th className="px-6 py-4 text-left text-sm font-semibold">Načrt</th>
                       <th className="px-6 py-4 text-right text-sm font-semibold">Akcije</th>
                     </tr>
                   </thead>
@@ -112,6 +113,15 @@ const WorkOrders = () => {
                         <td className="px-6 py-4">
                           <span className="font-mono text-sm font-semibold text-primary">
                             {order.serijska}
+                          </span>
+                        </td>
+                        <td className="px-6 py-4">
+                          <span className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${
+                            order.status === 'aktiven' 
+                              ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400'
+                              : 'bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-400'
+                          }`}>
+                            {order.status}
                           </span>
                         </td>
                         <td className="px-6 py-4">
@@ -127,12 +137,12 @@ const WorkOrders = () => {
                             {order.material}
                           </div>
                         </td>
-                        <td className="px-6 py-4 text-sm">{order.rok_izvedbe}</td>
+                        <td className="px-6 py-4 text-sm">{order.r_razpisa}</td>
                         <td className="px-6 py-4">
-                          {order.nacrti && (
+                          {order.nacrt && (
                             <div className="flex items-center gap-1 text-sm text-primary">
                               <FileText className="h-4 w-4" />
-                              {order.nacrti}
+                              {order.nacrt}
                             </div>
                           )}
                         </td>
