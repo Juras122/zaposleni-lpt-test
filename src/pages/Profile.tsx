@@ -1,14 +1,14 @@
-import { useEffect, useState } from 'react';
-import { useNavigate, useSearchParams } from 'react-router-dom';
-import { Header } from '@/components/Header';
-import { ProfileSidebar } from '@/components/ProfileSidebar';
-import { PersonalStats } from '@/components/PersonalStats';
-import { StatsCard } from '@/components/StatsCard';
-import { Card } from '@/components/ui/card';
-import { fetchUserProfile, fetchWorkHours } from '@/lib/api';
-import { UserProfile, WorkHour } from '@/types';
-import { Clock, Mail, CheckCircle } from 'lucide-react';
-import { toast } from 'sonner';
+import { useEffect, useState } from "react";
+import { useNavigate, useSearchParams } from "react-router-dom";
+import { Header } from "@/components/Header";
+import { ProfileSidebar } from "@/components/ProfileSidebar";
+import { PersonalStats } from "@/components/PersonalStats";
+import { StatsCard } from "@/components/StatsCard";
+import { Card } from "@/components/ui/card";
+import { fetchUserProfile, fetchWorkHours } from "@/lib/api";
+import { UserProfile, WorkHour } from "@/types";
+import { Clock, Mail, CheckCircle } from "lucide-react";
+import { toast } from "sonner";
 
 const Profile = () => {
   const [searchParams] = useSearchParams();
@@ -19,13 +19,13 @@ const Profile = () => {
 
   useEffect(() => {
     const loadProfile = async () => {
-      const urlUserId = searchParams.get('id');
-      const sessionUserId = sessionStorage.getItem('loggedInUserId');
+      const urlUserId = searchParams.get("id");
+      const sessionUserId = sessionStorage.getItem("loggedInUserId");
       const userId = urlUserId || sessionUserId;
 
       if (!userId) {
-        toast.error('Niste prijavljeni');
-        navigate('/');
+        toast.error("Niste prijavljeni");
+        navigate("/");
         return;
       }
 
@@ -36,21 +36,18 @@ const Profile = () => {
 
       // Store in session
       if (urlUserId) {
-        sessionStorage.setItem('loggedInUserId', urlUserId);
+        sessionStorage.setItem("loggedInUserId", urlUserId);
       }
 
       try {
-        const [profileData, workHoursData] = await Promise.all([
-          fetchUserProfile(userId),
-          fetchWorkHours(userId)
-        ]);
-        
+        const [profileData, workHoursData] = await Promise.all([fetchUserProfile(userId), fetchWorkHours(userId)]);
+
         setProfile(profileData);
         setWorkHours(workHoursData);
       } catch (error) {
-        console.error('Error loading profile:', error);
-        toast.error('Napaka pri nalaganju profila');
-        navigate('/');
+        console.error("Error loading profile:", error);
+        toast.error("Napaka pri nalaganju profila");
+        navigate("/");
       } finally {
         setIsLoading(false);
       }
@@ -82,19 +79,17 @@ const Profile = () => {
   return (
     <div className="min-h-screen bg-background">
       <Header />
-      
+
       <div className="container mx-auto p-4 lg:p-8">
         <div className="flex flex-col gap-6 lg:flex-row">
           <ProfileSidebar profile={profile} />
-          
+
           <main className="flex-1 space-y-6">
             <div>
               <h1 className="text-3xl font-bold">
                 Dobrodošli nazaj, <span className="text-primary">{profile.ime}</span>
               </h1>
-              <p className="mt-2 text-muted-foreground">
-                Tukaj je pregled vaše aktivnosti in statistike
-              </p>
+              <p className="mt-2 text-muted-foreground">Tukaj je pregled vaše aktivnosti in statistike</p>
             </div>
 
             <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
@@ -102,20 +97,10 @@ const Profile = () => {
                 title="Evidenca delovnega časa"
                 value={`${totalWorkHours.toFixed(1)}h`}
                 icon={Clock}
-                description="Skupno število ur ta mesec"
+                description="Skupno število ur to leto"
               />
-              <StatsCard
-                title="Sporočila"
-                value="0"
-                icon={Mail}
-                description="Nova sporočila"
-              />
-              <StatsCard
-                title="Zaključene naloge"
-                value="0"
-                icon={CheckCircle}
-                description="Ta teden"
-              />
+              <StatsCard title="Sporočila" value="0" icon={Mail} description="Nova sporočila" />
+              <StatsCard title="Zaključene naloge" value="0" icon={CheckCircle} description="Ta teden" />
             </div>
 
             <Card className="p-6 shadow-elegant">
