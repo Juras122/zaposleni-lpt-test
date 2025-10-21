@@ -3,29 +3,60 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, LineChart, Line } from 'recharts';
 import { Calendar, Clock, Moon, Sunset, Sun, Coffee } from 'lucide-react';
 import { WorkHour } from '@/types';
+import { useMemo } from 'react';
 
 interface PersonalStatsProps {
   workHours: WorkHour[];
 }
 
 export const PersonalStats = ({ workHours }: PersonalStatsProps) => {
-  // Mock podatki za grafe - mesečni
-  const monthlyData = [
-    { mesec: 'Jan', ure: 168 },
-    { mesec: 'Feb', ure: 160 },
-    { mesec: 'Mar', ure: 176 },
-    { mesec: 'Apr', ure: 168 },
-    { mesec: 'Maj', ure: 172 },
-    { mesec: 'Jun', ure: 168 },
-  ];
+  const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'Maj', 'Jun', 'Jul', 'Avg', 'Sep', 'Okt', 'Nov', 'Dec'];
 
-  // Mock podatki za grafe - letni
-  const yearlyData = [
-    { leto: '2022', ure: 2080 },
-    { leto: '2023', ure: 2096 },
-    { leto: '2024', ure: 2040 },
-    { leto: '2025', ure: 340 },
-  ];
+  // Procesiranje mesečnih podatkov iz workHours
+  const monthlyData = useMemo(() => {
+    const monthlyMap = new Map<string, number>();
+
+    workHours.forEach((wh) => {
+      // Parse datum format: "1.10.2025" -> day.month.year
+      const [day, month, year] = wh.datum.split('.');
+      const monthKey = `${year}-${month.padStart(2, '0')}`;
+      const hours = parseFloat(wh.stevilo) || 0;
+
+      monthlyMap.set(monthKey, (monthlyMap.get(monthKey) || 0) + hours);
+    });
+
+    // Sort by year-month and convert to chart format
+    return Array.from(monthlyMap.entries())
+      .sort(([a], [b]) => a.localeCompare(b))
+      .map(([key, ure]) => {
+        const [year, month] = key.split('-');
+        const monthIndex = parseInt(month) - 1;
+        return {
+          mesec: `${monthNames[monthIndex]} ${year}`,
+          ure: Math.round(ure)
+        };
+      });
+  }, [workHours]);
+
+  // Procesiranje letnih podatkov iz workHours
+  const yearlyData = useMemo(() => {
+    const yearlyMap = new Map<string, number>();
+
+    workHours.forEach((wh) => {
+      const [, , year] = wh.datum.split('.');
+      const hours = parseFloat(wh.stevilo) || 0;
+
+      yearlyMap.set(year, (yearlyMap.get(year) || 0) + hours);
+    });
+
+    // Sort by year and convert to chart format
+    return Array.from(yearlyMap.entries())
+      .sort(([a], [b]) => a.localeCompare(b))
+      .map(([leto, ure]) => ({
+        leto,
+        ure: Math.round(ure)
+      }));
+  }, [workHours]);
 
   // Statistika ur
   const hourStats = {
