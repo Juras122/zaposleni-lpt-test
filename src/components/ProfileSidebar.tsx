@@ -16,8 +16,8 @@ export const ProfileSidebar = ({ profile }: ProfileSidebarProps) => {
     { id: 'whm', label: 'Evidenca delovnega časa', icon: Clock, path: `/work-hours?id=${userId}`, active: currentPath === '/work-hours' },
     { id: 'sdms', label: 'SDMS', icon: FileText, external: 'https://sdms.lpt.si' },
     { id: 'pdn', label: 'Pregled delovnih nalogov', icon: FileText, path: `/work-orders?id=${userId}`, active: currentPath === '/work-orders' || currentPath.startsWith('/work-order/') },
-    { id: 'skld', label: 'Skladišče', icon: Package },
-    { id: 'upr', label: 'Upravljanje uporabnikov', icon: Users },
+    { id: 'skld', label: 'Skladišče', icon: Package, path: `/warehouse?id=${userId}`, active: currentPath === '/warehouse' },
+    { id: 'upr', label: 'Upravljanje uporabnikov', icon: Users, path: `/users-managment?id=${userId}`, active: currentPath === '/users-managment' },
     { id: 'obrc', label: 'Obračun', icon: Calculator },
     { id: 'finc', label: 'Finance', icon: DollarSign }
   ];
