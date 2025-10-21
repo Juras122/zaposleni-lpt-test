@@ -308,9 +308,9 @@ const WorkOrderDetailPage = () => {
                           </div>
                         )}
 
-                        {(vrstaObelezbe === "STOP (0,5x0,3)" || 
-                          vrstaObelezbe === "GRBINA (VELIKA)"||)
-                          vrstaObelezbe === "GRBINA (MALA)"||)&& (
+                        {(vrstaObelezbe === "STOP (0,5x0,3)" ||
+                          vrstaObelezbe === "GRBINA (VELIKA)" ||
+                          vrstaObelezbe === "GRBINA (MALA)") && (
                           <div className="grid gap-2">
                             <Label htmlFor="steviloElementov">Število elementov</Label>
                             <Input
