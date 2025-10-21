@@ -1,6 +1,6 @@
 import { Card } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, LineChart, Line } from 'recharts';
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { Calendar, Clock, Moon, Sunset, Sun, Coffee } from 'lucide-react';
 import { WorkHour } from '@/types';
 import { useMemo } from 'react';
@@ -87,43 +87,6 @@ export const PersonalStats = ({ workHours }: PersonalStatsProps) => {
       });
   }, [workHours]);
 
-  // Procesiranje letnih podatkov iz workHours
-  const yearlyData = useMemo(() => {
-    const yearlyMap = new Map<string, number>();
-
-    workHours.forEach((wh) => {
-      // Preveri, če datum obstaja in je pravilnega formata
-      if (!wh.datum || typeof wh.datum !== 'string') {
-        return;
-      }
-
-      let year: string;
-
-      // Podpora za oba formata: "YYYY-MM-DD" ali "DD.MM.YYYY"
-      if (wh.datum.includes('-')) {
-        // Format: YYYY-MM-DD
-        const parts = wh.datum.split('-');
-        if (parts.length !== 3) return;
-        year = parts[0];
-      } else {
-        // Format: DD.MM.YYYY
-        const parts = wh.datum.split('.');
-        if (parts.length !== 3) return;
-        year = parts[2];
-      }
-
-      const hours = parseFloat(wh.stevilo) || 0;
-      yearlyMap.set(year, (yearlyMap.get(year) || 0) + hours);
-    });
-
-    // Sort by year and convert to chart format
-    return Array.from(yearlyMap.entries())
-      .sort(([a], [b]) => a.localeCompare(b))
-      .map(([leto, ure]) => ({
-        leto,
-        ure: Math.round(ure)
-      }));
-  }, [workHours]);
 
   // Statistika ur - izračunane iz dejanskih podatkov
   const hourStats = useMemo(() => {
@@ -217,67 +180,33 @@ export const PersonalStats = ({ workHours }: PersonalStatsProps) => {
           </TabsList>
 
           <TabsContent value="grafi" className="space-y-4 mt-4">
-            {monthlyData.length === 0 && yearlyData.length === 0 ? (
+            {monthlyData.length === 0 ? (
               <div className="text-center py-8 text-muted-foreground">
                 <Calendar className="h-12 w-12 mx-auto mb-2 opacity-50" />
                 <p>Ni podatkov za prikaz</p>
               </div>
             ) : (
-              <>
-                {monthlyData.length > 0 && (
-                  <div>
-                    <h4 className="text-sm font-medium mb-3 flex items-center gap-2">
-                      <Calendar className="h-4 w-4 text-primary" />
-                      Mesečni pregled ur
-                    </h4>
-                    <ResponsiveContainer width="100%" height={200}>
-                      <BarChart data={monthlyData}>
-                        <CartesianGrid strokeDasharray="3 3" className="stroke-border" />
-                        <XAxis dataKey="mesec" className="text-xs" />
-                        <YAxis className="text-xs" />
-                        <Tooltip 
-                          contentStyle={{ 
-                            backgroundColor: 'hsl(var(--card))',
-                            border: '1px solid hsl(var(--border))',
-                            borderRadius: '0.5rem'
-                          }}
-                        />
-                        <Bar dataKey="ure" fill="hsl(var(--primary))" radius={[8, 8, 0, 0]} />
-                      </BarChart>
-                    </ResponsiveContainer>
-                  </div>
-                )}
-
-                {yearlyData.length > 0 && (
-                  <div>
-                    <h4 className="text-sm font-medium mb-3 flex items-center gap-2">
-                      <Calendar className="h-4 w-4 text-primary" />
-                      Letni pregled ur
-                    </h4>
-                    <ResponsiveContainer width="100%" height={200}>
-                      <LineChart data={yearlyData}>
-                        <CartesianGrid strokeDasharray="3 3" className="stroke-border" />
-                        <XAxis dataKey="leto" className="text-xs" />
-                        <YAxis className="text-xs" />
-                        <Tooltip 
-                          contentStyle={{ 
-                            backgroundColor: 'hsl(var(--card))',
-                            border: '1px solid hsl(var(--border))',
-                            borderRadius: '0.5rem'
-                          }}
-                        />
-                        <Line 
-                          type="monotone" 
-                          dataKey="ure" 
-                          stroke="hsl(var(--primary))" 
-                          strokeWidth={2}
-                          dot={{ fill: 'hsl(var(--primary))' }}
-                        />
-                      </LineChart>
-                    </ResponsiveContainer>
-                  </div>
-                )}
-              </>
+              <div>
+                <h4 className="text-sm font-medium mb-3 flex items-center gap-2">
+                  <Calendar className="h-4 w-4 text-primary" />
+                  Mesečni pregled ur
+                </h4>
+                <ResponsiveContainer width="100%" height={200}>
+                  <BarChart data={monthlyData}>
+                    <CartesianGrid strokeDasharray="3 3" className="stroke-border" />
+                    <XAxis dataKey="mesec" className="text-xs" />
+                    <YAxis className="text-xs" />
+                    <Tooltip 
+                      contentStyle={{ 
+                        backgroundColor: 'hsl(var(--card))',
+                        border: '1px solid hsl(var(--border))',
+                        borderRadius: '0.5rem'
+                      }}
+                    />
+                    <Bar dataKey="ure" fill="hsl(var(--primary))" radius={[8, 8, 0, 0]} />
+                  </BarChart>
+                </ResponsiveContainer>
+              </div>
             )}
           </TabsContent>
 
