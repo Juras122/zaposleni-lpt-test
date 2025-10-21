@@ -1,19 +1,27 @@
-import { useEffect, useState } from 'react';
-import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
-import { Header } from '@/components/Header';
-import { ProfileSidebar } from '@/components/ProfileSidebar';
-import { Card } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
-import { Textarea } from '@/components/ui/textarea';
-import { Label } from '@/components/ui/label';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Input } from '@/components/ui/input';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { fetchUserProfile, fetchWorkOrderDetail, addWorkEntry, fetchWorkEntries } from '@/lib/api';
-import { UserProfile, WorkOrderDetail, WorkEntry } from '@/types';
-import { ArrowLeft, Calendar, MapPin, Package, User, FileText, Plus } from 'lucide-react';
-import { toast } from 'sonner';
+import { useEffect, useState } from "react";
+import { useNavigate, useParams, useSearchParams } from "react-router-dom";
+import { Header } from "@/components/Header";
+import { ProfileSidebar } from "@/components/ProfileSidebar";
+import { Card } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { Textarea } from "@/components/ui/textarea";
+import { Label } from "@/components/ui/label";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Input } from "@/components/ui/input";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { fetchUserProfile, fetchWorkOrderDetail, addWorkEntry, fetchWorkEntries } from "@/lib/api";
+import { UserProfile, WorkOrderDetail, WorkEntry } from "@/types";
+import { ArrowLeft, Calendar, MapPin, Package, User, FileText, Plus } from "lucide-react";
+import { toast } from "sonner";
 
 const WorkOrderDetailPage = () => {
   const { serijska } = useParams<{ serijska: string }>();
@@ -25,32 +33,29 @@ const WorkOrderDetailPage = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
-  const [vrstaObelezbe, setVrstaObelezbe] = useState<string>('');
-  const [dolzina, setDolzina] = useState('');
-  const [steviloElementov, setSteviloElementov] = useState('');
+  const [vrstaObelezbe, setVrstaObelezbe] = useState<string>("");
+  const [dolzina, setDolzina] = useState("");
+  const [steviloElementov, setSteviloElementov] = useState("");
 
   useEffect(() => {
     const loadData = async () => {
-      const urlUserId = searchParams.get('id');
-      const sessionUserId = sessionStorage.getItem('loggedInUserId');
+      const urlUserId = searchParams.get("id");
+      const sessionUserId = sessionStorage.getItem("loggedInUserId");
       const userId = urlUserId || sessionUserId;
 
       if (!userId || !serijska) {
-        toast.error('Niste prijavljeni');
-        navigate('/');
+        toast.error("Niste prijavljeni");
+        navigate("/");
         return;
       }
 
       if (urlUserId) {
-        sessionStorage.setItem('loggedInUserId', urlUserId);
+        sessionStorage.setItem("loggedInUserId", urlUserId);
       }
 
       try {
-        const [profileData, detailData] = await Promise.all([
-          fetchUserProfile(userId),
-          fetchWorkOrderDetail(serijska)
-        ]);
-        
+        const [profileData, detailData] = await Promise.all([fetchUserProfile(userId), fetchWorkOrderDetail(serijska)]);
+
         setProfile(profileData);
         setOrderDetail(detailData);
 
@@ -59,13 +64,13 @@ const WorkOrderDetailPage = () => {
           const entriesData = await fetchWorkEntries(serijska);
           setWorkEntries(entriesData);
         } catch (entriesError) {
-          console.warn('Could not load work entries:', entriesError);
+          console.warn("Could not load work entries:", entriesError);
           setWorkEntries([]);
         }
       } catch (error) {
-        console.error('Error loading data:', error);
-        toast.error('Napaka pri nalaganju podatkov');
-        navigate('/work-orders');
+        console.error("Error loading data:", error);
+        toast.error("Napaka pri nalaganju podatkov");
+        navigate("/work-orders");
       } finally {
         setIsLoading(false);
       }
@@ -76,28 +81,31 @@ const WorkOrderDetailPage = () => {
 
   const handleAddPopis = async () => {
     if (!vrstaObelezbe) {
-      toast.error('Prosim izberite vrsto označbe');
+      toast.error("Prosim izberite vrsto označbe");
       return;
     }
 
     if (!serijska) {
-      toast.error('Napaka: Manjka ID delovnega naloga');
+      toast.error("Napaka: Manjka ID delovnega naloga");
       return;
     }
 
     // Validacija glede na vrsto označbe
-    if (vrstaObelezbe === 'STOP' && !dolzina) {
-      toast.error('Prosim vnesite dolžino');
+    if (vrstaObelezbe === "STOP" && !dolzina) {
+      toast.error("Prosim vnesite dolžino");
       return;
     }
 
-    if (vrstaObelezbe === 'STOP (0,5x0,3)' && !steviloElementov) {
-      toast.error('Prosim vnesite število elementov');
+    if (vrstaObelezbe === "STOP (0,5x0,3)" && !steviloElementov) {
+      toast.error("Prosim vnesite število elementov");
       return;
     }
 
-    if ((vrstaObelezbe === 'PREHOD ZA PEŠCE (NAVADEN)' || vrstaObelezbe === 'PREHOD ZA PEŠCE (KOCKE)') && (!dolzina || !steviloElementov)) {
-      toast.error('Prosim vnesite dolžino in število elementov');
+    if (
+      (vrstaObelezbe === "PREHOD ZA PEŠCE (NAVADEN)" || vrstaObelezbe === "PREHOD ZA PEŠCE (KOCKE)") &&
+      (!dolzina || !steviloElementov)
+    ) {
+      toast.error("Prosim vnesite dolžino in število elementov");
       return;
     }
 
@@ -112,16 +120,16 @@ const WorkOrderDetailPage = () => {
       });
 
       setWorkEntries([newEntry, ...workEntries]);
-      toast.success('Popis dela uspešno dodan');
-      
+      toast.success("Popis dela uspešno dodan");
+
       // Reset form
-      setVrstaObelezbe('');
-      setDolzina('');
-      setSteviloElementov('');
+      setVrstaObelezbe("");
+      setDolzina("");
+      setSteviloElementov("");
       setIsDialogOpen(false);
     } catch (error) {
-      console.error('Error adding work entry:', error);
-      toast.error('Napaka pri shranjevanju popisa dela');
+      console.error("Error adding work entry:", error);
+      toast.error("Napaka pri shranjevanju popisa dela");
     } finally {
       setIsSaving(false);
     }
@@ -142,23 +150,19 @@ const WorkOrderDetailPage = () => {
     return null;
   }
 
-  const userId = searchParams.get('id') || sessionStorage.getItem('loggedInUserId');
+  const userId = searchParams.get("id") || sessionStorage.getItem("loggedInUserId");
 
   return (
     <div className="min-h-screen bg-background">
       <Header />
-      
+
       <div className="container mx-auto p-4 lg:p-8">
         <div className="flex flex-col gap-6 lg:flex-row">
           <ProfileSidebar profile={profile} />
-          
+
           <main className="flex-1 space-y-6">
             <div className="flex items-center gap-4">
-              <Button
-                variant="ghost"
-                onClick={() => navigate(`/work-orders?id=${userId}`)}
-                className="gap-2"
-              >
+              <Button variant="ghost" onClick={() => navigate(`/work-orders?id=${userId}`)} className="gap-2">
                 <ArrowLeft className="h-4 w-4" />
                 Nazaj
               </Button>
@@ -255,9 +259,7 @@ const WorkOrderDetailPage = () => {
 
               <Card className="p-6 shadow-elegant lg:col-span-2">
                 <h2 className="mb-4 text-lg font-semibold">Opis dela</h2>
-                <p className="text-sm leading-relaxed text-muted-foreground">
-                  {orderDetail.opis}
-                </p>
+                <p className="text-sm leading-relaxed text-muted-foreground">{orderDetail.opis}</p>
               </Card>
 
               <Card className="p-6 shadow-elegant lg:col-span-2">
@@ -273,9 +275,7 @@ const WorkOrderDetailPage = () => {
                     <DialogContent className="sm:max-w-[525px]">
                       <DialogHeader>
                         <DialogTitle>Dodaj popis</DialogTitle>
-                        <DialogDescription>
-                          Izberi vrsto označbe
-                        </DialogDescription>
+                        <DialogDescription>Izberi vrsto označbe</DialogDescription>
                       </DialogHeader>
                       <div className="grid gap-4 py-4">
                         <div className="grid gap-2">
@@ -288,11 +288,13 @@ const WorkOrderDetailPage = () => {
                               <SelectItem value="STOP (0,5x0,3)">STOP (0,5x0,3)</SelectItem>
                               <SelectItem value="PREHOD ZA PEŠCE (NAVADEN)">PREHOD ZA PEŠCE (NAVADEN)</SelectItem>
                               <SelectItem value="PREHOD ZA PEŠCE (KOCKE)">PREHOD ZA PEŠCE (KOCKE)</SelectItem>
+                              <SelectItem value="GRBINA (VELIKA)">GRBINA (VELIKA)</SelectItem>
+                              <SelectItem value="GRBINA (MALA)">GRBINA (MALA)</SelectItem>
                             </SelectContent>
                           </Select>
                         </div>
 
-                        {vrstaObelezbe === 'STOP' && (
+                        {vrstaObelezbe === "STOP" && (
                           <div className="grid gap-2">
                             <Label htmlFor="dolzina">Dolžina (m)</Label>
                             <Input
@@ -306,7 +308,7 @@ const WorkOrderDetailPage = () => {
                           </div>
                         )}
 
-                        {vrstaObelezbe === 'STOP (0,5x0,3)' && (
+                        {vrstaObelezbe === "STOP (0,5x0,3)" && (
                           <div className="grid gap-2">
                             <Label htmlFor="steviloElementov">Število elementov</Label>
                             <Input
@@ -319,7 +321,8 @@ const WorkOrderDetailPage = () => {
                           </div>
                         )}
 
-                        {(vrstaObelezbe === 'PREHOD ZA PEŠCE (NAVADEN)' || vrstaObelezbe === 'PREHOD ZA PEŠCE (KOCKE)') && (
+                        {(vrstaObelezbe === "PREHOD ZA PEŠCE (NAVADEN)" ||
+                          vrstaObelezbe === "PREHOD ZA PEŠCE (KOCKE)") && (
                           <>
                             <div className="grid gap-2">
                               <Label htmlFor="dolzina">Dolžina (m)</Label>
@@ -350,13 +353,13 @@ const WorkOrderDetailPage = () => {
                           Prekliči
                         </Button>
                         <Button onClick={handleAddPopis} disabled={isSaving}>
-                          {isSaving ? 'Shranjevanje...' : 'Shrani'}
+                          {isSaving ? "Shranjevanje..." : "Shrani"}
                         </Button>
                       </DialogFooter>
                     </DialogContent>
                   </Dialog>
                 </div>
-                
+
                 {workEntries.length > 0 ? (
                   <div className="rounded-md border">
                     <Table>
@@ -371,22 +374,16 @@ const WorkOrderDetailPage = () => {
                       <TableBody>
                         {workEntries.map((entry) => (
                           <TableRow key={entry.id}>
-                            <TableCell className="font-medium">
-                              {entry.naziv_elementa}
-                            </TableCell>
-                            <TableCell>
-                              {entry.dolzina || '-'}
-                            </TableCell>
-                            <TableCell>
-                              {entry.st_elemtov || '-'}
-                            </TableCell>
+                            <TableCell className="font-medium">{entry.naziv_elementa}</TableCell>
+                            <TableCell>{entry.dolzina || "-"}</TableCell>
+                            <TableCell>{entry.st_elemtov || "-"}</TableCell>
                             <TableCell className="text-muted-foreground">
-                              {new Date(entry.datum_vnosa).toLocaleDateString('sl-SI', {
-                                year: 'numeric',
-                                month: 'long',
-                                day: 'numeric',
-                                hour: '2-digit',
-                                minute: '2-digit'
+                              {new Date(entry.datum_vnosa).toLocaleDateString("sl-SI", {
+                                year: "numeric",
+                                month: "long",
+                                day: "numeric",
+                                hour: "2-digit",
+                                minute: "2-digit",
                               })}
                             </TableCell>
                           </TableRow>
