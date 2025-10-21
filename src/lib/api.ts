@@ -1,6 +1,6 @@
 // api.ts (Posodobljena različica)
 
-import { UserProfile, WorkHour, WorkOrder, WorkOrderDetail, WarehouseItem } from '@/types';
+import { UserProfile, WorkHour, WorkOrder, WorkOrderDetail, WarehouseItem, WorkEntry } from '@/types';
 
 // *** 1. Nastavitev baznega URL-ja ***
 const BASE_URL = 'https://zaposleni-lptt.onrender.com/api';
@@ -83,4 +83,43 @@ export async function fetchAllUsers(): Promise<UserProfile[]> {
   
   // Backend obravnava logiko za pridobivanje vseh uporabnikov iz Postgresql
   return handleResponse<UserProfile[]>(response);
+}
+
+// Funkcija 8: Dodajanje work entry
+export async function addWorkEntry(entry: {
+  workOrderId: string;
+  nazivElementa: string;
+  znacilka?: string;
+  dolzina?: string;
+  stElementov?: string;
+  material?: string;
+  kvadratura?: string;
+}): Promise<WorkEntry> {
+  const response = await fetch(`${BASE_URL}/work-entries`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(entry),
+  });
+  
+  return handleResponse<WorkEntry>(response);
+}
+
+// Funkcija 9: Pridobivanje work entries za delovni nalog
+export async function fetchWorkEntries(workOrderId: string): Promise<WorkEntry[]> {
+  try {
+    const response = await fetch(`${BASE_URL}/work-entries/${workOrderId}`);
+    
+    // Če endpoint ne obstaja (404), vrni prazen array
+    if (response.status === 404) {
+      console.warn(`Work entries endpoint not found for order ${workOrderId}`);
+      return [];
+    }
+    
+    return handleResponse<WorkEntry[]>(response);
+  } catch (error) {
+    console.error('Error fetching work entries:', error);
+    return [];
+  }
 }

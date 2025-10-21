@@ -49,3 +49,15 @@ export interface WarehouseItem {
   datum_vnosa: string;
   zadnja_sprememba: string;
 }
+
+export interface WorkEntry {
+  id: string;
+  work_order_id: string;
+  naziv_elementa: string;
+  znacilka?: string;
+  dolzina?: string;
+  st_elemtov?: string;
+  material?: string;
+  kvadratura?: string;
+  datum_vnosa: string;
+}

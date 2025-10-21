@@ -9,8 +9,9 @@ import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Input } from '@/components/ui/input';
-import { fetchUserProfile, fetchWorkOrderDetail } from '@/lib/api';
-import { UserProfile, WorkOrderDetail } from '@/types';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { fetchUserProfile, fetchWorkOrderDetail, addWorkEntry, fetchWorkEntries } from '@/lib/api';
+import { UserProfile, WorkOrderDetail, WorkEntry } from '@/types';
 import { ArrowLeft, Calendar, MapPin, Package, User, FileText, Plus } from 'lucide-react';
 import { toast } from 'sonner';
 
@@ -20,9 +21,10 @@ const WorkOrderDetailPage = () => {
   const navigate = useNavigate();
   const [profile, setProfile] = useState<UserProfile | null>(null);
   const [orderDetail, setOrderDetail] = useState<WorkOrderDetail | null>(null);
+  const [workEntries, setWorkEntries] = useState<WorkEntry[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [popisDela, setPopisDela] = useState('');
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
   const [vrstaObelezbe, setVrstaObelezbe] = useState<string>('');
   const [dolzina, setDolzina] = useState('');
   const [steviloElementov, setSteviloElementov] = useState('');
@@ -51,6 +53,15 @@ const WorkOrderDetailPage = () => {
         
         setProfile(profileData);
         setOrderDetail(detailData);
+
+        // Pridobi work entries
+        try {
+          const entriesData = await fetchWorkEntries(serijska);
+          setWorkEntries(entriesData);
+        } catch (entriesError) {
+          console.warn('Could not load work entries:', entriesError);
+          setWorkEntries([]);
+        }
       } catch (error) {
         console.error('Error loading data:', error);
         toast.error('Napaka pri nalaganju podatkov');
@@ -63,19 +74,57 @@ const WorkOrderDetailPage = () => {
     loadData();
   }, [serijska, searchParams, navigate]);
 
-  const handleAddPopis = () => {
+  const handleAddPopis = async () => {
     if (!vrstaObelezbe) {
       toast.error('Prosim izberite vrsto označbe');
       return;
     }
-    
-    // Here you would typically save to backend
-    toast.success('Popis dela uspešno dodan');
-    setPopisDela('');
-    setVrstaObelezbe('');
-    setDolzina('');
-    setSteviloElementov('');
-    setIsDialogOpen(false);
+
+    if (!serijska) {
+      toast.error('Napaka: Manjka ID delovnega naloga');
+      return;
+    }
+
+    // Validacija glede na vrsto označbe
+    if (vrstaObelezbe === 'STOP' && !dolzina) {
+      toast.error('Prosim vnesite dolžino');
+      return;
+    }
+
+    if (vrstaObelezbe === 'STOP (0,5x0,3)' && !steviloElementov) {
+      toast.error('Prosim vnesite število elementov');
+      return;
+    }
+
+    if ((vrstaObelezbe === 'PREHOD ZA PEŠCE (NAVADEN)' || vrstaObelezbe === 'PREHOD ZA PEŠCE (KOCKE)') && (!dolzina || !steviloElementov)) {
+      toast.error('Prosim vnesite dolžino in število elementov');
+      return;
+    }
+
+    setIsSaving(true);
+
+    try {
+      const newEntry = await addWorkEntry({
+        workOrderId: serijska,
+        nazivElementa: vrstaObelezbe,
+        dolzina: dolzina || undefined,
+        stElementov: steviloElementov || undefined,
+      });
+
+      setWorkEntries([newEntry, ...workEntries]);
+      toast.success('Popis dela uspešno dodan');
+      
+      // Reset form
+      setVrstaObelezbe('');
+      setDolzina('');
+      setSteviloElementov('');
+      setIsDialogOpen(false);
+    } catch (error) {
+      console.error('Error adding work entry:', error);
+      toast.error('Napaka pri shranjevanju popisa dela');
+    } finally {
+      setIsSaving(false);
+    }
   };
 
   if (isLoading) {
@@ -245,10 +294,11 @@ const WorkOrderDetailPage = () => {
 
                         {vrstaObelezbe === 'STOP' && (
                           <div className="grid gap-2">
-                            <Label htmlFor="dolzina">Dolžina</Label>
+                            <Label htmlFor="dolzina">Dolžina (m)</Label>
                             <Input
                               id="dolzina"
                               type="number"
+                              step="0.01"
                               placeholder="Vnesite dolžino"
                               value={dolzina}
                               onChange={(e) => setDolzina(e.target.value)}
@@ -272,10 +322,11 @@ const WorkOrderDetailPage = () => {
                         {(vrstaObelezbe === 'PREHOD ZA PEŠCE (NAVADEN)' || vrstaObelezbe === 'PREHOD ZA PEŠCE (KOCKE)') && (
                           <>
                             <div className="grid gap-2">
-                              <Label htmlFor="dolzina">Dolžina</Label>
+                              <Label htmlFor="dolzina">Dolžina (m)</Label>
                               <Input
                                 id="dolzina"
                                 type="number"
+                                step="0.01"
                                 placeholder="Vnesite dolžino"
                                 value={dolzina}
                                 onChange={(e) => setDolzina(e.target.value)}
@@ -295,17 +346,59 @@ const WorkOrderDetailPage = () => {
                         )}
                       </div>
                       <DialogFooter>
-                        <Button variant="outline" onClick={() => setIsDialogOpen(false)}>
+                        <Button variant="outline" onClick={() => setIsDialogOpen(false)} disabled={isSaving}>
                           Prekliči
                         </Button>
-                        <Button onClick={handleAddPopis}>Shrani</Button>
+                        <Button onClick={handleAddPopis} disabled={isSaving}>
+                          {isSaving ? 'Shranjevanje...' : 'Shrani'}
+                        </Button>
                       </DialogFooter>
                     </DialogContent>
                   </Dialog>
                 </div>
-                <p className="text-sm text-muted-foreground">
-                  Tu bo prikazan popis opravljenega dela.
-                </p>
+                
+                {workEntries.length > 0 ? (
+                  <div className="rounded-md border">
+                    <Table>
+                      <TableHeader>
+                        <TableRow>
+                          <TableHead>Vrsta označbe</TableHead>
+                          <TableHead>Dolžina (m)</TableHead>
+                          <TableHead>Število elementov</TableHead>
+                          <TableHead>Datum vnosa</TableHead>
+                        </TableRow>
+                      </TableHeader>
+                      <TableBody>
+                        {workEntries.map((entry) => (
+                          <TableRow key={entry.id}>
+                            <TableCell className="font-medium">
+                              {entry.naziv_elementa}
+                            </TableCell>
+                            <TableCell>
+                              {entry.dolzina || '-'}
+                            </TableCell>
+                            <TableCell>
+                              {entry.st_elemtov || '-'}
+                            </TableCell>
+                            <TableCell className="text-muted-foreground">
+                              {new Date(entry.datum_vnosa).toLocaleDateString('sl-SI', {
+                                year: 'numeric',
+                                month: 'long',
+                                day: 'numeric',
+                                hour: '2-digit',
+                                minute: '2-digit'
+                              })}
+                            </TableCell>
+                          </TableRow>
+                        ))}
+                      </TableBody>
+                    </Table>
+                  </div>
+                ) : (
+                  <p className="text-sm text-muted-foreground text-center py-8">
+                    Ni še nobenega vpisa. Dodajte prvi popis dela.
+                  </p>
+                )}
               </Card>
             </div>
           </main>
