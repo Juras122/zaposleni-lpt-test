@@ -1,9 +1,9 @@
 // api.ts (Posodobljena različica)
 
-import { UserProfile, WorkHour, WorkOrder, WorkOrderDetail, WarehouseItem, WorkEntry } from "@/types";
+import { UserProfile, WorkHour, WorkOrder, WorkOrderDetail, WarehouseItem } from '@/types';
 
 // *** 1. Nastavitev baznega URL-ja ***
-const BASE_URL = "https://zaposleni-lptt.onrender.com/api";
+const BASE_URL = 'https://zaposleni-lptt.onrender.com/api';
 
 // Pomožna funkcija za obravnavo odgovorov
 async function handleResponse<T>(response: Response): Promise<T> {
@@ -20,7 +20,7 @@ async function handleResponse<T>(response: Response): Promise<T> {
 export async function fetchUserProfile(userId: string): Promise<UserProfile> {
   // Klic na: https://zaposleni-lptt.onrender.com/api/profiles/:id
   const response = await fetch(`${BASE_URL}/profiles/${userId}`);
-
+  
   // Backend obravnava logiko za pridobivanje iz Postgresql (glej index.js -> app.get('/api/profiles/:id'))
   return handleResponse<UserProfile>(response);
 }
@@ -29,7 +29,7 @@ export async function fetchUserProfile(userId: string): Promise<UserProfile> {
 export async function fetchWorkHours(userId: string): Promise<WorkHour[]> {
   // Klic na: https://zaposleni-lptt.onrender.com/api/workhours/:id
   const response = await fetch(`${BASE_URL}/workhours/${userId}`);
-
+  
   // Backend obravnava logiko za pridobivanje iz Postgresql (glej index.js -> app.get('/api/workhours/:id'))
   // Opomba: Vaš backend vrne polje objektov, kar se ujema z WorkHour[]
   return handleResponse<WorkHour[]>(response);
@@ -52,16 +52,17 @@ export async function validateUserId(userId: string): Promise<boolean> {
 export async function fetchWorkOrders(): Promise<WorkOrder[]> {
   // Klic na: https://zaposleni-lptt.onrender.com/api/rdn
   const response = await fetch(`${BASE_URL}/rdn`);
-
+  
   // Backend obravnava logiko za pridobivanje iz Postgresql (glej index.js -> app.get('/api/rdn'))
   return handleResponse<WorkOrder[]>(response);
 }
+
 
 // Funkcija 5: Pridobivanje podrobnosti enega delovnega naloga
 export async function fetchWorkOrderDetail(serijska: string): Promise<WorkOrderDetail> {
   // Klic na: https://zaposleni-lptt.onrender.com/api/rdn/:serijska
   const response = await fetch(`${BASE_URL}/rdn/${serijska}`);
-
+  
   // Backend obravnava logiko za pridobivanje iz Postgresql (glej index.js -> app.get('/api/rdn/:serijska'))
   return handleResponse<WorkOrderDetail>(response);
 }
@@ -70,7 +71,7 @@ export async function fetchWorkOrderDetail(serijska: string): Promise<WorkOrderD
 export async function fetchWarehouseItems(): Promise<WarehouseItem[]> {
   // Klic na: https://zaposleni-lptt.onrender.com/api/warehouse
   const response = await fetch(`${BASE_URL}/warehouse`);
-
+  
   // Backend obravnava logiko za pridobivanje iz Postgresql (glej index.js -> app.get('/api/warehouse'))
   return handleResponse<WarehouseItem[]>(response);
 }
@@ -79,29 +80,7 @@ export async function fetchWarehouseItems(): Promise<WarehouseItem[]> {
 export async function fetchAllUsers(): Promise<UserProfile[]> {
   // Klic na: https://zaposleni-lptt.onrender.com/api/profiles
   const response = await fetch(`${BASE_URL}/profiles`);
-
+  
   // Backend obravnava logiko za pridobivanje vseh uporabnikov iz Postgresql
   return handleResponse<UserProfile[]>(response);
-}
-
-// Funkcija 8: Dodajanje vnosa popisa dela
-export async function addWorkEntry(workEntry: Omit<WorkEntry, "id" | "datumVnosa">): Promise<WorkEntry> {
-  // Klic na: https://zaposleni-lptt.onrender.com/api/work-entries
-  const response = await fetch(`${BASE_URL}/rdn`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(workEntry),
-  });
-
-  return handleResponse<WorkEntry>(response);
-}
-
-// Funkcija 9: Pridobivanje vnosov popisa dela za določen delovni nalog
-export async function fetchWorkEntries(workOrderId: string): Promise<WorkEntry[]> {
-  // Klic na: https://zaposleni-lptt.onrender.com/api/work-entries/:workOrderId
-  const response = await fetch(`${BASE_URL}/work-entries/${workOrderId}`);
-
-  return handleResponse<WorkEntry[]>(response);
 }
