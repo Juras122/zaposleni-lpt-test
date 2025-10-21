@@ -203,7 +203,6 @@ const WorkOrders = () => {
                           <SortIcon field="r_razpisa" />
                         </div>
                       </th>
-                      <th className="px-6 py-4 text-left text-sm font-semibold">Načrt</th>
                       <th className="px-6 py-4 text-right text-sm font-semibold">Akcije</th>
                     </tr>
                   </thead>
@@ -238,14 +237,6 @@ const WorkOrders = () => {
                           </div>
                         </td>
                         <td className="px-6 py-4 text-sm">{order.r_razpisa}</td>
-                        <td className="px-6 py-4">
-                          {order.nacrt && (
-                            <div className="flex items-center gap-1 text-sm text-primary">
-                              <FileText className="h-4 w-4" />
-                              {order.nacrt}
-                            </div>
-                          )}
-                        </td>
                         <td className="px-6 py-4 text-right">
                           <Button
                             size="sm"
