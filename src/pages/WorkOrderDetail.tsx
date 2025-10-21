@@ -9,8 +9,8 @@ import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Input } from '@/components/ui/input';
-import { fetchUserProfile, fetchWorkOrderDetail } from '@/lib/api';
-import { UserProfile, WorkOrderDetail } from '@/types';
+import { fetchUserProfile, fetchWorkOrderDetail, addWorkEntry, fetchWorkEntries } from '@/lib/api';
+import { UserProfile, WorkOrderDetail, WorkEntry } from '@/types';
 import { ArrowLeft, Calendar, MapPin, Package, User, FileText, Plus } from 'lucide-react';
 import { toast } from 'sonner';
 
@@ -26,6 +26,7 @@ const WorkOrderDetailPage = () => {
   const [vrstaObelezbe, setVrstaObelezbe] = useState<string>('');
   const [dolzina, setDolzina] = useState('');
   const [steviloElementov, setSteviloElementov] = useState('');
+  const [workEntries, setWorkEntries] = useState<WorkEntry[]>([]);
 
   useEffect(() => {
     const loadData = async () => {
@@ -44,13 +45,15 @@ const WorkOrderDetailPage = () => {
       }
 
       try {
-        const [profileData, detailData] = await Promise.all([
+        const [profileData, detailData, entriesData] = await Promise.all([
           fetchUserProfile(userId),
-          fetchWorkOrderDetail(serijska)
+          fetchWorkOrderDetail(serijska),
+          fetchWorkEntries(serijska)
         ]);
         
         setProfile(profileData);
         setOrderDetail(detailData);
+        setWorkEntries(entriesData);
       } catch (error) {
         console.error('Error loading data:', error);
         toast.error('Napaka pri nalaganju podatkov');
@@ -63,19 +66,48 @@ const WorkOrderDetailPage = () => {
     loadData();
   }, [serijska, searchParams, navigate]);
 
-  const handleAddPopis = () => {
+  const handleAddPopis = async () => {
     if (!vrstaObelezbe) {
       toast.error('Prosim izberite vrsto označbe');
       return;
     }
     
-    // Here you would typically save to backend
-    toast.success('Popis dela uspešno dodan');
-    setPopisDela('');
-    setVrstaObelezbe('');
-    setDolzina('');
-    setSteviloElementov('');
-    setIsDialogOpen(false);
+    const zahtevaDolzino = ['STOP', 'PREHOD ZA PEŠCE (NAVADEN)', 'PREHOD ZA PEŠCE (KOCKE)'].includes(vrstaObelezbe);
+    const zahtevaStevilo = ['STOP (0,5x0,3)', 'PREHOD ZA PEŠCE (NAVADEN)', 'PREHOD ZA PEŠCE (KOCKE)'].includes(vrstaObelezbe);
+
+    if (zahtevaDolzino && !dolzina) {
+      toast.error('Prosim vnesite dolžino.');
+      return;
+    }
+    if (zahtevaStevilo && !steviloElementov) {
+      toast.error('Prosim vnesite število elementov.');
+      return;
+    }
+
+    const newWorkEntry = {
+      workOrderId: serijska || '',
+      vrstaObelezbe: vrstaObelezbe,
+      dolzina: dolzina ? parseFloat(dolzina) : 0,
+      steviloElementov: steviloElementov ? parseInt(steviloElementov) : 0,
+      opombe: popisDela,
+      izvajalecId: profile?.id || '',
+    };
+
+    try {
+      const savedEntry = await addWorkEntry(newWorkEntry);
+      setWorkEntries([...workEntries, savedEntry]);
+      
+      toast.success('Popis dela uspešno dodan!');
+      
+      setPopisDela('');
+      setVrstaObelezbe('');
+      setDolzina('');
+      setSteviloElementov('');
+      setIsDialogOpen(false);
+    } catch (error) {
+      console.error('Napaka pri shranjevanju popisa dela:', error);
+      toast.error('Napaka pri shranjevanju. Poskusite ponovno.');
+    }
   };
 
   if (isLoading) {
@@ -303,9 +335,40 @@ const WorkOrderDetailPage = () => {
                     </DialogContent>
                   </Dialog>
                 </div>
-                <p className="text-sm text-muted-foreground">
-                  Tu bo prikazan popis opravljenega dela.
-                </p>
+                
+                {workEntries.length === 0 ? (
+                  <p className="text-sm text-muted-foreground">
+                    Ni še nobenega vpisa. Kliknite "Dodaj" za dodajanje popisa dela.
+                  </p>
+                ) : (
+                  <div className="overflow-x-auto">
+                    <table className="w-full">
+                      <thead>
+                        <tr className="border-b">
+                          <th className="text-left py-3 px-4 text-sm font-medium text-muted-foreground">Vrsta označbe</th>
+                          <th className="text-left py-3 px-4 text-sm font-medium text-muted-foreground">Dolžina</th>
+                          <th className="text-left py-3 px-4 text-sm font-medium text-muted-foreground">Število elementov</th>
+                          <th className="text-left py-3 px-4 text-sm font-medium text-muted-foreground">Datum vnosa</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {workEntries.map((entry) => (
+                          <tr key={entry.id} className="border-b last:border-0 hover:bg-muted/50">
+                            <td className="py-3 px-4 text-sm">{entry.vrstaObelezbe}</td>
+                            <td className="py-3 px-4 text-sm">{entry.dolzina > 0 ? `${entry.dolzina} m` : '-'}</td>
+                            <td className="py-3 px-4 text-sm">{entry.steviloElementov > 0 ? entry.steviloElementov : '-'}</td>
+                            <td className="py-3 px-4 text-sm">
+                              {entry.datumVnosa 
+                                ? new Date(entry.datumVnosa).toLocaleDateString('sl-SI')
+                                : '-'
+                              }
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                )}
               </Card>
             </div>
           </main>

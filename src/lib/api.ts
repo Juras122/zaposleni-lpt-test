@@ -1,6 +1,6 @@
 // api.ts (Posodobljena različica)
 
-import { UserProfile, WorkHour, WorkOrder, WorkOrderDetail, WarehouseItem } from '@/types';
+import { UserProfile, WorkHour, WorkOrder, WorkOrderDetail, WarehouseItem, WorkEntry } from '@/types';
 
 // *** 1. Nastavitev baznega URL-ja ***
 const BASE_URL = 'https://zaposleni-lptt.onrender.com/api';
@@ -83,4 +83,26 @@ export async function fetchAllUsers(): Promise<UserProfile[]> {
   
   // Backend obravnava logiko za pridobivanje vseh uporabnikov iz Postgresql
   return handleResponse<UserProfile[]>(response);
+}
+
+// Funkcija 8: Dodajanje vnosa popisa dela
+export async function addWorkEntry(workEntry: Omit<WorkEntry, 'id' | 'datumVnosa'>): Promise<WorkEntry> {
+  // Klic na: https://zaposleni-lptt.onrender.com/api/work-entries
+  const response = await fetch(`${BASE_URL}/work-entries`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(workEntry),
+  });
+  
+  return handleResponse<WorkEntry>(response);
+}
+
+// Funkcija 9: Pridobivanje vnosov popisa dela za določen delovni nalog
+export async function fetchWorkEntries(workOrderId: string): Promise<WorkEntry[]> {
+  // Klic na: https://zaposleni-lptt.onrender.com/api/work-entries/:workOrderId
+  const response = await fetch(`${BASE_URL}/work-entries/${workOrderId}`);
+  
+  return handleResponse<WorkEntry[]>(response);
 }
