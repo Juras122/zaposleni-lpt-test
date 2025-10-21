@@ -125,13 +125,76 @@ export const PersonalStats = ({ workHours }: PersonalStatsProps) => {
       }));
   }, [workHours]);
 
-  // Statistika ur
-  const hourStats = {
-    dnevne: 120,
-    nocne: 16,
-    popoldanske: 48,
-    nadure: 12,
-  };
+  // Statistika ur - izračunane iz dejanskih podatkov
+  const hourStats = useMemo(() => {
+    let dnevne = 0;
+    let nocne = 0;
+    let popoldanske = 0;
+    let nadure = 0;
+
+    currentMonthWorkHours.forEach((wh) => {
+      const totalHours = parseFloat(wh.stevilo) || 0;
+      
+      // Izračunaj nadure (vse kar presega 8 ur)
+      if (totalHours > 8) {
+        nadure += totalHours - 8;
+      }
+
+      // Parsiraj čase
+      const prihod = wh.prihod || '00:00';
+      const odhod = wh.odhod || '00:00';
+      
+      const prihodHour = parseInt(prihod.split(':')[0]);
+      const odhodHour = parseInt(odhod.split(':')[0]);
+      const prihodMinute = parseInt(prihod.split(':')[1]) || 0;
+      const odhodMinute = parseInt(odhod.split(':')[1]) || 0;
+
+      // Funkcija za izračun ur v določenem časovnem razponu
+      const calculateOverlap = (startH: number, endH: number, workStartH: number, workStartM: number, workEndH: number, workEndM: number) => {
+        // Pretvori v minute
+        const rangeStart = startH * 60;
+        const rangeEnd = endH * 60;
+        const workStart = workStartH * 60 + workStartM;
+        let workEnd = workEndH * 60 + workEndM;
+
+        // Če delo poteka čez polnoč
+        if (workEnd <= workStart) {
+          workEnd += 24 * 60;
+        }
+
+        // Če razpon poteka čez polnoč (npr. nočne ure 22-6)
+        let adjustedRangeEnd = rangeEnd;
+        if (rangeEnd <= rangeStart) {
+          adjustedRangeEnd += 24 * 60;
+        }
+
+        // Izračunaj prekrivanje
+        const overlapStart = Math.max(rangeStart, workStart);
+        const overlapEnd = Math.min(adjustedRangeEnd, workEnd);
+
+        if (overlapEnd > overlapStart) {
+          return (overlapEnd - overlapStart) / 60;
+        }
+        return 0;
+      };
+
+      // Dnevne ure: 6:00 - 14:00
+      dnevne += calculateOverlap(6, 14, prihodHour, prihodMinute, odhodHour, odhodMinute);
+
+      // Popoldanske ure: 14:00 - 22:00
+      popoldanske += calculateOverlap(14, 22, prihodHour, prihodMinute, odhodHour, odhodMinute);
+
+      // Nočne ure: 22:00 - 6:00
+      nocne += calculateOverlap(22, 6, prihodHour, prihodMinute, odhodHour, odhodMinute);
+    });
+
+    return {
+      dnevne: Math.round(dnevne),
+      nocne: Math.round(nocne),
+      popoldanske: Math.round(popoldanske),
+      nadure: Math.round(nadure),
+    };
+  }, [currentMonthWorkHours]);
 
   // Dopust
   const dopust = {
