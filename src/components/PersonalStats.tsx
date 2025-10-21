@@ -17,8 +17,21 @@ export const PersonalStats = ({ workHours }: PersonalStatsProps) => {
     const monthlyMap = new Map<string, number>();
 
     workHours.forEach((wh) => {
-      // Parse datum format: "1.10.2025" -> day.month.year
-      const [day, month, year] = wh.datum.split('.');
+      // Preveri, če datum obstaja in je pravilnega formata
+      if (!wh.datum || typeof wh.datum !== 'string') {
+        console.warn('Neveljaven datum:', wh);
+        return;
+      }
+
+      const parts = wh.datum.split('.');
+      const [day, month, year] = parts;
+
+      // Preveri, če so vsi deli prisotni
+      if (!day || !month || !year) {
+        console.warn('Nepopoln datum:', wh.datum);
+        return;
+      }
+
       const monthKey = `${year}-${month.padStart(2, '0')}`;
       const hours = parseFloat(wh.stevilo) || 0;
 
@@ -43,9 +56,22 @@ export const PersonalStats = ({ workHours }: PersonalStatsProps) => {
     const yearlyMap = new Map<string, number>();
 
     workHours.forEach((wh) => {
-      const [, , year] = wh.datum.split('.');
-      const hours = parseFloat(wh.stevilo) || 0;
+      // Preveri, če datum obstaja in je pravilnega formata
+      if (!wh.datum || typeof wh.datum !== 'string') {
+        console.warn('Neveljaven datum:', wh);
+        return;
+      }
 
+      const parts = wh.datum.split('.');
+      const [, , year] = parts;
+
+      // Preveri, če je leto prisotno
+      if (!year) {
+        console.warn('Nepopoln datum:', wh.datum);
+        return;
+      }
+
+      const hours = parseFloat(wh.stevilo) || 0;
       yearlyMap.set(year, (yearlyMap.get(year) || 0) + hours);
     });
 
@@ -87,55 +113,68 @@ export const PersonalStats = ({ workHours }: PersonalStatsProps) => {
           </TabsList>
 
           <TabsContent value="grafi" className="space-y-4 mt-4">
-            <div>
-              <h4 className="text-sm font-medium mb-3 flex items-center gap-2">
-                <Calendar className="h-4 w-4 text-primary" />
-                Mesečni pregled ur
-              </h4>
-              <ResponsiveContainer width="100%" height={200}>
-                <BarChart data={monthlyData}>
-                  <CartesianGrid strokeDasharray="3 3" className="stroke-border" />
-                  <XAxis dataKey="mesec" className="text-xs" />
-                  <YAxis className="text-xs" />
-                  <Tooltip 
-                    contentStyle={{ 
-                      backgroundColor: 'hsl(var(--card))',
-                      border: '1px solid hsl(var(--border))',
-                      borderRadius: '0.5rem'
-                    }}
-                  />
-                  <Bar dataKey="ure" fill="hsl(var(--primary))" radius={[8, 8, 0, 0]} />
-                </BarChart>
-              </ResponsiveContainer>
-            </div>
+            {monthlyData.length === 0 && yearlyData.length === 0 ? (
+              <div className="text-center py-8 text-muted-foreground">
+                <Calendar className="h-12 w-12 mx-auto mb-2 opacity-50" />
+                <p>Ni podatkov za prikaz</p>
+              </div>
+            ) : (
+              <>
+                {monthlyData.length > 0 && (
+                  <div>
+                    <h4 className="text-sm font-medium mb-3 flex items-center gap-2">
+                      <Calendar className="h-4 w-4 text-primary" />
+                      Mesečni pregled ur
+                    </h4>
+                    <ResponsiveContainer width="100%" height={200}>
+                      <BarChart data={monthlyData}>
+                        <CartesianGrid strokeDasharray="3 3" className="stroke-border" />
+                        <XAxis dataKey="mesec" className="text-xs" />
+                        <YAxis className="text-xs" />
+                        <Tooltip 
+                          contentStyle={{ 
+                            backgroundColor: 'hsl(var(--card))',
+                            border: '1px solid hsl(var(--border))',
+                            borderRadius: '0.5rem'
+                          }}
+                        />
+                        <Bar dataKey="ure" fill="hsl(var(--primary))" radius={[8, 8, 0, 0]} />
+                      </BarChart>
+                    </ResponsiveContainer>
+                  </div>
+                )}
 
-            <div>
-              <h4 className="text-sm font-medium mb-3 flex items-center gap-2">
-                <Calendar className="h-4 w-4 text-primary" />
-                Letni pregled ur
-              </h4>
-              <ResponsiveContainer width="100%" height={200}>
-                <LineChart data={yearlyData}>
-                  <CartesianGrid strokeDasharray="3 3" className="stroke-border" />
-                  <XAxis dataKey="leto" className="text-xs" />
-                  <YAxis className="text-xs" />
-                  <Tooltip 
-                    contentStyle={{ 
-                      backgroundColor: 'hsl(var(--card))',
-                      border: '1px solid hsl(var(--border))',
-                      borderRadius: '0.5rem'
-                    }}
-                  />
-                  <Line 
-                    type="monotone" 
-                    dataKey="ure" 
-                    stroke="hsl(var(--primary))" 
-                    strokeWidth={2}
-                    dot={{ fill: 'hsl(var(--primary))' }}
-                  />
-                </LineChart>
-              </ResponsiveContainer>
-            </div>
+                {yearlyData.length > 0 && (
+                  <div>
+                    <h4 className="text-sm font-medium mb-3 flex items-center gap-2">
+                      <Calendar className="h-4 w-4 text-primary" />
+                      Letni pregled ur
+                    </h4>
+                    <ResponsiveContainer width="100%" height={200}>
+                      <LineChart data={yearlyData}>
+                        <CartesianGrid strokeDasharray="3 3" className="stroke-border" />
+                        <XAxis dataKey="leto" className="text-xs" />
+                        <YAxis className="text-xs" />
+                        <Tooltip 
+                          contentStyle={{ 
+                            backgroundColor: 'hsl(var(--card))',
+                            border: '1px solid hsl(var(--border))',
+                            borderRadius: '0.5rem'
+                          }}
+                        />
+                        <Line 
+                          type="monotone" 
+                          dataKey="ure" 
+                          stroke="hsl(var(--primary))" 
+                          strokeWidth={2}
+                          dot={{ fill: 'hsl(var(--primary))' }}
+                        />
+                      </LineChart>
+                    </ResponsiveContainer>
+                  </div>
+                )}
+              </>
+            )}
           </TabsContent>
 
           <TabsContent value="ure" className="mt-4">
