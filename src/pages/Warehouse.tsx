@@ -1,28 +1,22 @@
-import { useState } from 'react';
-import { useQuery } from '@tanstack/react-query';
-import { fetchWarehouseItems } from '@/lib/api';
-import { Header } from '@/components/Header';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from '@/components/ui/table';
-import { Plus, Pencil, Trash2 } from 'lucide-react';
-import { toast } from 'sonner';
+import { useState } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { ProfileSidebar } from "@/components/ProfileSidebar";
+import { fetchWarehouseItems } from "@/lib/api";
+import { Header } from "@/components/Header";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { Plus, Pencil, Trash2 } from "lucide-react";
+import { toast } from "sonner";
 
 export default function Warehouse() {
   const { data: items, isLoading } = useQuery({
-    queryKey: ['warehouse'],
+    queryKey: ["warehouse"],
     queryFn: fetchWarehouseItems,
   });
 
   const handleAdd = () => {
-    toast.info('Dodajanje elementa - v razvoju');
+    toast.info("Dodajanje elementa - v razvoju");
   };
 
   const handleEdit = (id: string) => {
@@ -36,7 +30,7 @@ export default function Warehouse() {
   return (
     <div className="min-h-screen bg-background">
       <Header />
-      
+
       <main className="container mx-auto px-4 py-8">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-4">
@@ -46,12 +40,10 @@ export default function Warehouse() {
               Dodaj
             </Button>
           </CardHeader>
-          
+
           <CardContent>
             {isLoading ? (
-              <div className="text-center py-8 text-muted-foreground">
-                Nalaganje...
-              </div>
+              <div className="text-center py-8 text-muted-foreground">Nalaganje...</div>
             ) : (
               <div className="rounded-md border">
                 <Table>
@@ -70,9 +62,7 @@ export default function Warehouse() {
                   <TableBody>
                     {items?.map((item) => (
                       <TableRow key={item.id}>
-                        <TableCell className="font-medium">
-                          {item.serijska_koda}
-                        </TableCell>
+                        <TableCell className="font-medium">{item.serijska_koda}</TableCell>
                         <TableCell>{item.ime}</TableCell>
                         <TableCell>{item.stevilo}</TableCell>
                         <TableCell>{item.enota}</TableCell>
@@ -81,18 +71,10 @@ export default function Warehouse() {
                         <TableCell>{item.zadnja_sprememba}</TableCell>
                         <TableCell className="text-right">
                           <div className="flex justify-end gap-2">
-                            <Button
-                              variant="ghost"
-                              size="icon"
-                              onClick={() => handleEdit(item.id)}
-                            >
+                            <Button variant="ghost" size="icon" onClick={() => handleEdit(item.id)}>
                               <Pencil className="h-4 w-4" />
                             </Button>
-                            <Button
-                              variant="ghost"
-                              size="icon"
-                              onClick={() => handleDelete(item.id)}
-                            >
+                            <Button variant="ghost" size="icon" onClick={() => handleDelete(item.id)}>
                               <Trash2 className="h-4 w-4" />
                             </Button>
                           </div>
