@@ -28,6 +28,13 @@ export const ProfileSidebar = ({ profile }: ProfileSidebarProps) => {
       path: `/work-orders?id=${userId}`,
       active: currentPath === "/work-orders" || currentPath.startsWith("/work-order/"),
     },
+    { id: "NSZ", label: "Nesvetlobna signalizacija - Zapore", icon: FileText },
+    { id: "SS", label: "Svetlobna signalizacija - Semaforizacija", icon: FileText },
+    { id: "OPT", label: "Optika", icon: FileText },
+    { id: "PKA", label: "Parkirišča", icon: FileText },
+    { id: "TRZ", label: "Tržnice", icon: FileText },
+    { id: "PAJ", label: "Odvoz vozil", icon: FileText },
+
     {
       id: "skld",
       label: "Skladišče",
