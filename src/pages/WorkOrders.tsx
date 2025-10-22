@@ -1,21 +1,28 @@
-import { useEffect, useState } from 'react';
-import { useNavigate, useSearchParams } from 'react-router-dom';
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import * as z from 'zod';
-import { Header } from '@/components/Header';
-import { ProfileSidebar } from '@/components/ProfileSidebar';
-import { Card } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
-import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { fetchUserProfile, fetchWorkOrders, createWorkOrder } from '@/lib/api';
-import { UserProfile, WorkOrder } from '@/types';
-import { MapPin, Package, ArrowUpDown, ArrowUp, ArrowDown, Plus } from 'lucide-react';
-import { toast } from 'sonner';
+import { useEffect, useState } from "react";
+import { useNavigate, useSearchParams } from "react-router-dom";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import * as z from "zod";
+import { Header } from "@/components/Header";
+import { ProfileSidebar } from "@/components/ProfileSidebar";
+import { Card } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { fetchUserProfile, fetchWorkOrders, createWorkOrder } from "@/lib/api";
+import { UserProfile, WorkOrder } from "@/types";
+import { MapPin, Package, ArrowUpDown, ArrowUp, ArrowDown, Plus } from "lucide-react";
+import { toast } from "sonner";
 
 const workOrderSchema = z.object({
   serijska: z.string().min(1, "Serijska številka je obvezna"),
@@ -34,8 +41,8 @@ const workOrderSchema = z.object({
   nacrt: z.string().optional(),
 });
 
-type SortField = 'serijska' | 'status' | 'lokacija' | 'vrsta' | 'material' | 'r_razpisa';
-type SortDirection = 'asc' | 'desc' | null;
+type SortField = "serijska" | "status" | "lokacija" | "vrsta" | "material" | "r_razpisa";
+type SortDirection = "asc" | "desc" | null;
 
 const WorkOrders = () => {
   const [searchParams] = useSearchParams();
@@ -51,30 +58,30 @@ const WorkOrders = () => {
   const form = useForm<z.infer<typeof workOrderSchema>>({
     resolver: zodResolver(workOrderSchema),
     defaultValues: {
-      serijska: '',
-      naslov: '',
-      narocnik: '',
-      izvajalec: '',
-      status: 'aktiven',
-      lokacija: '',
-      vrsta: '',
-      material: '',
-      d_razpisa: '',
-      r_razpisa: '',
-      opis: '',
-      nacrt: '',
+      serijska: "",
+      naslov: "",
+      narocnik: "",
+      izvajalec: "",
+      status: "aktiven",
+      lokacija: "",
+      vrsta: "",
+      material: "",
+      d_razpisa: "",
+      r_razpisa: "",
+      opis: "",
+      nacrt: "",
     },
   });
 
   useEffect(() => {
     const loadData = async () => {
-      const urlUserId = searchParams.get('id');
-      const sessionUserId = sessionStorage.getItem('loggedInUserId');
+      const urlUserId = searchParams.get("id");
+      const sessionUserId = sessionStorage.getItem("loggedInUserId");
       const userId = urlUserId || sessionUserId;
 
       if (!userId) {
-        toast.error('Niste prijavljeni');
-        navigate('/');
+        toast.error("Niste prijavljeni");
+        navigate("/");
         return;
       }
 
@@ -83,21 +90,18 @@ const WorkOrders = () => {
       }
 
       if (urlUserId) {
-        sessionStorage.setItem('loggedInUserId', urlUserId);
+        sessionStorage.setItem("loggedInUserId", urlUserId);
       }
 
       try {
-        const [profileData, ordersData] = await Promise.all([
-          fetchUserProfile(userId),
-          fetchWorkOrders()
-        ]);
-        
+        const [profileData, ordersData] = await Promise.all([fetchUserProfile(userId), fetchWorkOrders()]);
+
         setProfile(profileData);
         setWorkOrders(ordersData);
       } catch (error) {
-        console.error('Error loading data:', error);
-        toast.error('Napaka pri nalaganju podatkov');
-        navigate('/');
+        console.error("Error loading data:", error);
+        toast.error("Napaka pri nalaganju podatkov");
+        navigate("/");
       } finally {
         setIsLoading(false);
       }
@@ -107,21 +111,21 @@ const WorkOrders = () => {
   }, [searchParams, navigate]);
 
   const handleViewOrder = (serijska: string) => {
-    const userId = searchParams.get('id') || sessionStorage.getItem('loggedInUserId');
+    const userId = searchParams.get("id") || sessionStorage.getItem("loggedInUserId");
     navigate(`/work-order/${serijska}?id=${userId}`);
   };
 
   const handleSort = (field: SortField) => {
     if (sortField === field) {
-      if (sortDirection === 'asc') {
-        setSortDirection('desc');
-      } else if (sortDirection === 'desc') {
+      if (sortDirection === "asc") {
+        setSortDirection("desc");
+      } else if (sortDirection === "desc") {
         setSortDirection(null);
         setSortField(null);
       }
     } else {
       setSortField(field);
-      setSortDirection('asc');
+      setSortDirection("asc");
     }
   };
 
@@ -135,15 +139,15 @@ const WorkOrders = () => {
       let bValue = b[sortField];
 
       // Convert date strings to comparable format (DD.MM.YYYY to YYYY-MM-DD)
-      if (sortField === 'r_razpisa') {
-        const aDate = aValue.split('.').reverse().join('-');
-        const bDate = bValue.split('.').reverse().join('-');
+      if (sortField === "r_razpisa") {
+        const aDate = aValue.split(".").reverse().join("-");
+        const bDate = bValue.split(".").reverse().join("-");
         aValue = aDate;
         bValue = bDate;
       }
 
-      if (aValue < bValue) return sortDirection === 'asc' ? -1 : 1;
-      if (aValue > bValue) return sortDirection === 'asc' ? 1 : -1;
+      if (aValue < bValue) return sortDirection === "asc" ? -1 : 1;
+      if (aValue > bValue) return sortDirection === "asc" ? 1 : -1;
       return 0;
     });
   };
@@ -165,16 +169,16 @@ const WorkOrders = () => {
         opis: data.opis,
         nacrt: data.nacrt,
       });
-      toast.success('Delovni nalog uspešno ustvarjen');
+      toast.success("Delovni nalog uspešno ustvarjen");
       setIsDialogOpen(false);
       form.reset();
-      
+
       // Refresh seznam
       const ordersData = await fetchWorkOrders();
       setWorkOrders(ordersData);
     } catch (error) {
-      console.error('Error creating work order:', error);
-      toast.error('Napaka pri kreiranju delovnega naloga');
+      console.error("Error creating work order:", error);
+      toast.error("Napaka pri kreiranju delovnega naloga");
     } finally {
       setIsSubmitting(false);
     }
@@ -184,7 +188,7 @@ const WorkOrders = () => {
     if (sortField !== field) {
       return <ArrowUpDown className="ml-2 h-4 w-4" />;
     }
-    if (sortDirection === 'asc') {
+    if (sortDirection === "asc") {
       return <ArrowUp className="ml-2 h-4 w-4" />;
     }
     return <ArrowDown className="ml-2 h-4 w-4" />;
@@ -208,11 +212,11 @@ const WorkOrders = () => {
   return (
     <div className="min-h-screen bg-background">
       <Header />
-      
+
       <div className="container mx-auto p-4 lg:p-8">
         <div className="flex flex-col gap-6 lg:flex-row">
           <ProfileSidebar profile={profile} />
-          
+
           <main className="flex-1 space-y-6">
             <div className="flex items-center justify-between">
               <div>
@@ -221,7 +225,7 @@ const WorkOrders = () => {
                   Aktivni delovni nalogi: <span className="font-semibold text-primary">{workOrders.length}</span>
                 </p>
               </div>
-              
+
               <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
                 <DialogTrigger asChild>
                   <Button>
@@ -232,11 +236,9 @@ const WorkOrders = () => {
                 <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
                   <DialogHeader>
                     <DialogTitle>Nov delovni nalog</DialogTitle>
-                    <DialogDescription>
-                      Izpolnite podatke za nov delovni nalog
-                    </DialogDescription>
+                    <DialogDescription>Izpolnite podatke za nov delovni nalog</DialogDescription>
                   </DialogHeader>
-                  
+
                   <Form {...form}>
                     <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -253,7 +255,7 @@ const WorkOrders = () => {
                             </FormItem>
                           )}
                         />
-                        
+
                         <FormField
                           control={form.control}
                           name="status"
@@ -270,6 +272,8 @@ const WorkOrders = () => {
                                   <SelectItem value="aktiven">Aktiven</SelectItem>
                                   <SelectItem value="zakljucen">Zaključen</SelectItem>
                                   <SelectItem value="preklican">Preklican</SelectItem>
+                                  <SelectItem value="cakanje">Čakanje</SelectItem>
+                                  <SelectItem value="vpripravi">V pripravi</SelectItem>
                                 </SelectContent>
                               </Select>
                               <FormMessage />
@@ -306,7 +310,7 @@ const WorkOrders = () => {
                             </FormItem>
                           )}
                         />
-                        
+
                         <FormField
                           control={form.control}
                           name="izvajalec"
@@ -336,7 +340,7 @@ const WorkOrders = () => {
                             </FormItem>
                           )}
                         />
-                        
+
                         <FormField
                           control={form.control}
                           name="vrsta"
@@ -380,7 +384,7 @@ const WorkOrders = () => {
                             </FormItem>
                           )}
                         />
-                        
+
                         <FormField
                           control={form.control}
                           name="r_razpisa"
@@ -403,11 +407,7 @@ const WorkOrders = () => {
                           <FormItem>
                             <FormLabel>Opis</FormLabel>
                             <FormControl>
-                              <Textarea 
-                                placeholder="Opis delovnega naloga" 
-                                className="min-h-[100px]"
-                                {...field} 
-                              />
+                              <Textarea placeholder="Opis delovnega naloga" className="min-h-[100px]" {...field} />
                             </FormControl>
                             <FormMessage />
                           </FormItem>
@@ -441,7 +441,7 @@ const WorkOrders = () => {
                           Prekliči
                         </Button>
                         <Button type="submit" disabled={isSubmitting}>
-                          {isSubmitting ? 'Dodajanje...' : 'Dodaj delovni nalog'}
+                          {isSubmitting ? "Dodajanje..." : "Dodaj delovni nalog"}
                         </Button>
                       </div>
                     </form>
@@ -455,54 +455,54 @@ const WorkOrders = () => {
                 <table className="w-full">
                   <thead>
                     <tr className="border-b bg-muted/50">
-                      <th 
+                      <th
                         className="px-6 py-4 text-left text-sm font-semibold cursor-pointer hover:bg-muted/70 transition-smooth"
-                        onClick={() => handleSort('serijska')}
+                        onClick={() => handleSort("serijska")}
                       >
                         <div className="flex items-center">
                           Serijska številka
                           <SortIcon field="serijska" />
                         </div>
                       </th>
-                      <th 
+                      <th
                         className="px-6 py-4 text-left text-sm font-semibold cursor-pointer hover:bg-muted/70 transition-smooth"
-                        onClick={() => handleSort('status')}
+                        onClick={() => handleSort("status")}
                       >
                         <div className="flex items-center">
                           Status
                           <SortIcon field="status" />
                         </div>
                       </th>
-                      <th 
+                      <th
                         className="px-6 py-4 text-left text-sm font-semibold cursor-pointer hover:bg-muted/70 transition-smooth"
-                        onClick={() => handleSort('lokacija')}
+                        onClick={() => handleSort("lokacija")}
                       >
                         <div className="flex items-center">
                           Lokacija
                           <SortIcon field="lokacija" />
                         </div>
                       </th>
-                      <th 
+                      <th
                         className="px-6 py-4 text-left text-sm font-semibold cursor-pointer hover:bg-muted/70 transition-smooth"
-                        onClick={() => handleSort('vrsta')}
+                        onClick={() => handleSort("vrsta")}
                       >
                         <div className="flex items-center">
                           Vrsta
                           <SortIcon field="vrsta" />
                         </div>
                       </th>
-                      <th 
+                      <th
                         className="px-6 py-4 text-left text-sm font-semibold cursor-pointer hover:bg-muted/70 transition-smooth"
-                        onClick={() => handleSort('material')}
+                        onClick={() => handleSort("material")}
                       >
                         <div className="flex items-center">
                           Material
                           <SortIcon field="material" />
                         </div>
                       </th>
-                      <th 
+                      <th
                         className="px-6 py-4 text-left text-sm font-semibold cursor-pointer hover:bg-muted/70 transition-smooth"
-                        onClick={() => handleSort('r_razpisa')}
+                        onClick={() => handleSort("r_razpisa")}
                       >
                         <div className="flex items-center">
                           Datum razpisa
@@ -516,16 +516,16 @@ const WorkOrders = () => {
                     {getSortedOrders().map((order) => (
                       <tr key={order.serijska} className="transition-smooth hover:bg-muted/30">
                         <td className="px-6 py-4">
-                          <span className="font-mono text-sm font-semibold text-primary">
-                            {order.serijska}
-                          </span>
+                          <span className="font-mono text-sm font-semibold text-primary">{order.serijska}</span>
                         </td>
                         <td className="px-6 py-4">
-                          <span className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${
-                            order.status === 'aktiven' 
-                              ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400'
-                              : 'bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-400'
-                          }`}>
+                          <span
+                            className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${
+                              order.status === "aktiven"
+                                ? "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400"
+                                : "bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-400"
+                            }`}
+                          >
                             {order.status}
                           </span>
                         </td>
@@ -544,11 +544,7 @@ const WorkOrders = () => {
                         </td>
                         <td className="px-6 py-4 text-sm">{order.r_razpisa}</td>
                         <td className="px-6 py-4 text-right">
-                          <Button
-                            size="sm"
-                            variant="outline"
-                            onClick={() => handleViewOrder(order.serijska)}
-                          >
+                          <Button size="sm" variant="outline" onClick={() => handleViewOrder(order.serijska)}>
                             Poglej
                           </Button>
                         </td>
