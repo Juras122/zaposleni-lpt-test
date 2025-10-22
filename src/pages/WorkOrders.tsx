@@ -29,7 +29,7 @@ const workOrderSchema = z.object({
   naslov: z.string().min(1, "Naslov je obvezen"),
   narocnik: z.string().optional(),
   izvajalec: z.string().optional(),
-  status: z.enum(["aktiven", "zakljucen", "preklican"], {
+  status: z.enum(["aktiven", "zakljucen", "preklican", "cakanje", "vpripravi"], {
     required_error: "Status je obvezen",
   }),
   lokacija: z.string().optional(),
@@ -181,6 +181,34 @@ const WorkOrders = () => {
       toast.error("Napaka pri kreiranju delovnega naloga");
     } finally {
       setIsSubmitting(false);
+    }
+  };
+
+  const getStatusColor = (status: string) => {
+    switch (status.toLowerCase()) {
+      case "aktiven":
+        return "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400";
+      case "cakanje":
+        return "bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400";
+      case "vpripravi":
+        return "bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400";
+      case "zakljucen":
+        return "bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-400";
+      case "preklican":
+        return "bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400";
+      default:
+        return "bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-400";
+    }
+  };
+
+  const getStatusLabel = (status: string) => {
+    switch (status.toLowerCase()) {
+      case "aktiven": return "Aktiven";
+      case "cakanje": return "Čakanje";
+      case "vpripravi": return "V pripravi";
+      case "zakljucen": return "Zaključen";
+      case "preklican": return "Preklican";
+      default: return status;
     }
   };
 
@@ -519,14 +547,8 @@ const WorkOrders = () => {
                           <span className="font-mono text-sm font-semibold text-primary">{order.serijska}</span>
                         </td>
                         <td className="px-6 py-4">
-                          <span
-                            className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${
-                              order.status === "aktiven"
-                                ? "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400"
-                                : "bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-400"
-                            }`}
-                          >
-                            {order.status}
+                          <span className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${getStatusColor(order.status)}`}>
+                            {getStatusLabel(order.status)}
                           </span>
                         </td>
                         <td className="px-6 py-4">
