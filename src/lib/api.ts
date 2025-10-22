@@ -123,3 +123,29 @@ export async function fetchWorkEntries(workOrderId: string): Promise<WorkEntry[]
     return [];
   }
 }
+
+// Funkcija 10: Kreiranje novega delovnega naloga
+export async function createWorkOrder(orderData: {
+  serijska: string;
+  naslov: string;
+  narocnik?: string;
+  izvajalec?: string;
+  status: string;
+  lokacija?: string;
+  vrsta?: string;
+  material?: string;
+  d_razpisa?: string;
+  r_razpisa?: string;
+  opis?: string;
+  nacrt?: string;
+}): Promise<WorkOrderDetail> {
+  const response = await fetch(`${BASE_URL}/rdn`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(orderData),
+  });
+  
+  return handleResponse<WorkOrderDetail>(response);
+}
