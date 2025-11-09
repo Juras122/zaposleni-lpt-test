@@ -1,7 +1,8 @@
 import { UserProfile } from "@/types";
 import { Card } from "@/components/ui/card";
-import { User, Clock, FileText, Package, Users, Calculator, DollarSign } from "lucide-react";
+import { User, Clock, FileText, Package, Users, Calculator, DollarSign, ChevronDown } from "lucide-react";
 import { Link } from "react-router-dom";
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 
 interface ProfileSidebarProps {
   profile: UserProfile;
@@ -11,46 +12,70 @@ export const ProfileSidebar = ({ profile }: ProfileSidebarProps) => {
   const currentPath = window.location.pathname;
   const userId = profile.id;
 
-  const menuItems = [
-    { id: "profil", label: "Profil", icon: User, path: `/profile?id=${userId}`, active: currentPath === "/profile" },
+  const menuSegments = [
     {
-      id: "whm",
-      label: "Evidenca delovnega časa",
-      icon: Clock,
-      path: `/work-hours?id=${userId}`,
-      active: currentPath === "/work-hours",
+      id: "profil-segment",
+      label: "Profil & Čas",
+      icon: User,
+      items: [
+        { id: "profil", label: "Profil", icon: User, path: `/profile?id=${userId}`, active: currentPath === "/profile" },
+        { id: "whm", label: "Evidenca delovnega časa", icon: Clock, path: `/work-hours?id=${userId}`, active: currentPath === "/work-hours" },
+      ],
     },
-    { id: "sdms", label: "SDMS", icon: FileText, external: "https://sdms.lpt.si" },
     {
-      id: "pdn",
-      label: "Nesvetlobna signalizacija - talne označbe",
+      id: "dokumentacija-segment",
+      label: "Dokumentacija",
       icon: FileText,
-      path: `/work-orders?id=${userId}`,
-      active: currentPath === "/work-orders" || currentPath.startsWith("/work-order/"),
+      items: [
+        { id: "sdms", label: "SDMS", icon: FileText, external: "https://sdms.lpt.si" },
+      ],
     },
-    { id: "NSZ", label: "Nesvetlobna signalizacija - Zapore", icon: FileText },
-    { id: "SS", label: "Svetlobna signalizacija - Semaforizacija", icon: FileText },
-    { id: "OPT", label: "Optika", icon: FileText },
-    { id: "PKA", label: "Parkirišča", icon: FileText },
-    { id: "TRZ", label: "Tržnice", icon: FileText },
-    { id: "PAJ", label: "Odvoz vozil", icon: FileText },
-
     {
-      id: "skld",
-      label: "Skladišče",
+      id: "nesvetlobna-segment",
+      label: "Nesvetlobna signalizacija",
+      icon: FileText,
+      items: [
+        { id: "pdn", label: "Talne označbe", icon: FileText, path: `/work-orders?id=${userId}`, active: currentPath === "/work-orders" || currentPath.startsWith("/work-order/") },
+        { id: "NSZ", label: "Zapore", icon: FileText },
+      ],
+    },
+    {
+      id: "svetlobna-segment",
+      label: "Svetlobna signalizacija",
+      icon: FileText,
+      items: [
+        { id: "SS", label: "Semaforizacija", icon: FileText },
+      ],
+    },
+    {
+      id: "drugo-segment",
+      label: "Druge storitve",
       icon: Package,
-      path: `/warehouse?id=${userId}`,
-      active: currentPath === "/warehouse",
+      items: [
+        { id: "OPT", label: "Optika", icon: FileText },
+        { id: "PKA", label: "Parkirišča", icon: FileText },
+        { id: "TRZ", label: "Tržnice", icon: FileText },
+        { id: "PAJ", label: "Odvoz vozil", icon: FileText },
+      ],
     },
     {
-      id: "upr",
-      label: "Upravljanje uporabnikov",
+      id: "upravljanje-segment",
+      label: "Upravljanje",
       icon: Users,
-      path: `/users-managment?id=${userId}`,
-      active: currentPath === "/users-managment",
+      items: [
+        { id: "skld", label: "Skladišče", icon: Package, path: `/warehouse?id=${userId}`, active: currentPath === "/warehouse" },
+        { id: "upr", label: "Upravljanje uporabnikov", icon: Users, path: `/users-managment?id=${userId}`, active: currentPath === "/users-managment" },
+      ],
     },
-    { id: "obrc", label: "Obračun", icon: Calculator },
-    { id: "finc", label: "Finance", icon: DollarSign },
+    {
+      id: "financno-segment",
+      label: "Finančno",
+      icon: DollarSign,
+      items: [
+        { id: "obrc", label: "Obračun", icon: Calculator },
+        { id: "finc", label: "Finance", icon: DollarSign },
+      ],
+    },
   ];
 
   return (
@@ -67,44 +92,76 @@ export const ProfileSidebar = ({ profile }: ProfileSidebarProps) => {
         </Card>
 
         <Card className="p-4 shadow-elegant">
-          <nav className="space-y-1">
-            {menuItems.map((item) => {
-              const Icon = item.icon;
-              const className = `flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-smooth ${
-                item.active
-                  ? "bg-primary text-primary-foreground"
-                  : "text-muted-foreground hover:bg-accent hover:text-accent-foreground"
-              }`;
-
-              // External link
-              if (item.external) {
-                return (
-                  <a key={item.id} href={item.external} target="_blank" rel="noopener noreferrer" className={className}>
-                    <Icon className="h-4 w-4" />
-                    <span className="flex-1">{item.label}</span>
-                  </a>
-                );
-              }
-
-              // Internal link
-              if (item.path) {
-                return (
-                  <Link key={item.id} to={item.path} className={className}>
-                    <Icon className="h-4 w-4" />
-                    <span className="flex-1">{item.label}</span>
-                  </Link>
-                );
-              }
-
-              // Disabled item
+          <Accordion type="multiple" className="w-full">
+            {menuSegments.map((segment) => {
+              const hasActiveItem = segment.items.some((item) => item.active);
+              
               return (
-                <div key={item.id} className={`${className} opacity-50 cursor-not-allowed`}>
-                  <Icon className="h-4 w-4" />
-                  <span className="flex-1">{item.label}</span>
-                </div>
+                <AccordionItem key={segment.id} value={segment.id} className="border-b-0">
+                  <AccordionTrigger className="px-3 py-2 hover:no-underline hover:bg-accent rounded-lg">
+                    <div className="flex items-center gap-3">
+                      <segment.icon className="h-4 w-4 text-muted-foreground" />
+                      <span className="text-sm font-medium">{segment.label}</span>
+                    </div>
+                  </AccordionTrigger>
+                  <AccordionContent className="pb-1">
+                    <div className="space-y-1 pl-4">
+                      {segment.items.map((item) => {
+                        const Icon = item.icon;
+                        const className = `flex items-center gap-3 rounded-lg px-3 py-2 text-sm transition-smooth ${
+                          item.active
+                            ? "bg-primary text-primary-foreground font-medium"
+                            : "text-muted-foreground hover:bg-accent hover:text-accent-foreground"
+                        }`;
+
+                        // External link
+                        if (item.external) {
+                          return (
+                            <a
+                              key={item.id}
+                              href={item.external}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className={className}
+                            >
+                              <Icon className="h-4 w-4" />
+                              <span className="flex-1">{item.label}</span>
+                            </a>
+                          );
+                        }
+
+                        // Internal link
+                        if (item.path) {
+                          return (
+                            <Link key={item.id} to={item.path} className={className}>
+                              <Icon className="h-4 w-4" />
+                              <span className="flex-1">{item.label}</span>
+                            </Link>
+                          );
+                        }
+
+                        // Disabled item
+                        return (
+                          <div key={item.id} className={`${className} opacity-50 cursor-not-allowed`}>
+                            <Icon className="h-4 w-4" />
+                            <span className="flex-1">{item.label}</span>
+                          </div>
+                        );
+                      })}
+                      
+                      {/* Placeholder za prihodnjo statistiko */}
+                      {hasActiveItem && (
+                        <div className="mt-2 rounded-md bg-muted/50 p-2 text-xs text-muted-foreground">
+                          <p className="font-medium mb-1">Statistika</p>
+                          <p>Kmalu na voljo...</p>
+                        </div>
+                      )}
+                    </div>
+                  </AccordionContent>
+                </AccordionItem>
               );
             })}
-          </nav>
+          </Accordion>
         </Card>
       </div>
     </aside>
