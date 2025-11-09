@@ -18,34 +18,49 @@ export const ProfileSidebar = ({ profile }: ProfileSidebarProps) => {
       label: "Profil & Čas",
       icon: User,
       items: [
-        { id: "profil", label: "Profil", icon: User, path: `/profile?id=${userId}`, active: currentPath === "/profile" },
-        { id: "whm", label: "Evidenca delovnega časa", icon: Clock, path: `/work-hours?id=${userId}`, active: currentPath === "/work-hours" },
+        {
+          id: "profil",
+          label: "Profil",
+          icon: User,
+          path: `/profile?id=${userId}`,
+          active: currentPath === "/profile",
+        },
+        {
+          id: "whm",
+          label: "Evidenca delovnega časa",
+          icon: Clock,
+          path: `/work-hours?id=${userId}`,
+          active: currentPath === "/work-hours",
+        },
       ],
     },
     {
       id: "dokumentacija-segment",
       label: "Dokumentacija",
       icon: FileText,
-      items: [
-        { id: "sdms", label: "SDMS", icon: FileText, external: "https://sdms.lpt.si" },
-      ],
+      items: [{ id: "sdms", label: "SDMS", icon: FileText, external: "https://sdms.lpt.si" }],
     },
     {
       id: "nesvetlobna-segment",
       label: "Nesvetlobna signalizacija",
       icon: FileText,
       items: [
-        { id: "pdn", label: "Talne označbe", icon: FileText, path: `/work-orders?id=${userId}`, active: currentPath === "/work-orders" || currentPath.startsWith("/work-order/") },
+        {
+          id: "pdn",
+          label: "Talne označbe",
+          icon: FileText,
+          path: `/work-orders?id=${userId}`,
+          active: currentPath === "/work-orders" || currentPath.startsWith("/work-order/"),
+        },
         { id: "NSZ", label: "Zapore", icon: FileText },
+        { id: "sdms", label: "SDMS", icon: FileText, external: "https://sdms.lpt.si" },
       ],
     },
     {
       id: "svetlobna-segment",
       label: "Svetlobna signalizacija",
       icon: FileText,
-      items: [
-        { id: "SS", label: "Semaforizacija", icon: FileText },
-      ],
+      items: [{ id: "SS", label: "Semaforizacija", icon: FileText }],
     },
     {
       id: "drugo-segment",
@@ -63,8 +78,20 @@ export const ProfileSidebar = ({ profile }: ProfileSidebarProps) => {
       label: "Upravljanje",
       icon: Users,
       items: [
-        { id: "skld", label: "Skladišče", icon: Package, path: `/warehouse?id=${userId}`, active: currentPath === "/warehouse" },
-        { id: "upr", label: "Upravljanje uporabnikov", icon: Users, path: `/users-managment?id=${userId}`, active: currentPath === "/users-managment" },
+        {
+          id: "skld",
+          label: "Skladišče",
+          icon: Package,
+          path: `/warehouse?id=${userId}`,
+          active: currentPath === "/warehouse",
+        },
+        {
+          id: "upr",
+          label: "Upravljanje uporabnikov",
+          icon: Users,
+          path: `/users-managment?id=${userId}`,
+          active: currentPath === "/users-managment",
+        },
       ],
     },
     {
@@ -95,7 +122,7 @@ export const ProfileSidebar = ({ profile }: ProfileSidebarProps) => {
           <Accordion type="multiple" className="w-full">
             {menuSegments.map((segment) => {
               const hasActiveItem = segment.items.some((item) => item.active);
-              
+
               return (
                 <AccordionItem key={segment.id} value={segment.id} className="border-b-0">
                   <AccordionTrigger className="px-3 py-2 hover:no-underline hover:bg-accent rounded-lg">
@@ -148,7 +175,7 @@ export const ProfileSidebar = ({ profile }: ProfileSidebarProps) => {
                           </div>
                         );
                       })}
-                      
+
                       {/* Placeholder za prihodnjo statistiko */}
                       {hasActiveItem && (
                         <div className="mt-2 rounded-md bg-muted/50 p-2 text-xs text-muted-foreground">
