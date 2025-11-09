@@ -4,6 +4,7 @@ export interface UserProfile {
   naziv: string;
   email: string;
   telefon: string;
+  dovoljenja?: string;
 }
 
 export interface WorkHour {

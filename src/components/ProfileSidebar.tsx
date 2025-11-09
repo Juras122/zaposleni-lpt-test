@@ -12,6 +12,12 @@ export const ProfileSidebar = ({ profile }: ProfileSidebarProps) => {
   const currentPath = window.location.pathname;
   const userId = profile.id;
 
+  // Funkcija za preverjanje dovoljenja za segment (indeks v stringu dovoljenja)
+  const hasPermission = (index: number): boolean => {
+    if (!profile.dovoljenja) return true; // Če dovoljenja niso definirana, dovoli vse
+    return profile.dovoljenja[index] === "1";
+  };
+
   const menuSegments = [
     {
       id: "profil-segment",
@@ -120,7 +126,10 @@ export const ProfileSidebar = ({ profile }: ProfileSidebarProps) => {
 
         <Card className="p-4 shadow-elegant">
           <Accordion type="multiple" className="w-full">
-            {menuSegments.map((segment) => {
+            {menuSegments.map((segment, index) => {
+              // Preveri dovoljenje za ta segment
+              if (!hasPermission(index)) return null;
+              
               const hasActiveItem = segment.items.some((item) => item.active);
 
               return (
