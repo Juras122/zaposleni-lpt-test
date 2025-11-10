@@ -89,31 +89,24 @@ export const ProfileSidebar = ({ profile }: ProfileSidebarProps) => {
       id: "PKA",
       label: "Parkirišča",
       icon: FileText,
-      items: 
-        [
-          { id: "PARK", label: "Parkirišča", icon: SquareParking }
-        ],
+      items: [{ id: "PARK", label: "Parkirišča", icon: SquareParking }],
     },
-
 
     {
       id: "skd",
       label: "Skladišče",
       icon: Warehouse,
-      items: 
-        [{id: "skld",
-        label: "Stanje skladišča",
-        icon: Package,
-        path: `/warehouse?id=${userId}`,
-        active: currentPath === "/warehouse",
-        ],
+      items: [
+        {
+          id: "skld",
+          label: "Stanje skladišča",
+          icon: Package,
+          path: `/warehouse?id=${userId}`,
+          active: currentPath === "/warehouse",
+        },
+      ],
     },
 
-
-
-
-
-    
     {
       id: "drugo-segment",
       label: "Druge storitve",
@@ -129,7 +122,6 @@ export const ProfileSidebar = ({ profile }: ProfileSidebarProps) => {
       label: "Upravljanje",
       icon: Users,
       items: [
-        
         {
           id: "upr",
           label: "Upravljanje uporabnikov",
