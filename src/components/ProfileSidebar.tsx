@@ -51,12 +51,6 @@ export const ProfileSidebar = ({ profile }: ProfileSidebarProps) => {
       ],
     },
     {
-      id: "dokumentacija-segment",
-      label: "Dokumentacija",
-      icon: FileText,
-      items: [{ id: "sdms", label: "SDMS", icon: FileText, external: "https://sdms.lpt.si" }],
-    },
-    {
       id: "nesvetlobna-segment",
       label: "Nesvetlobna signalizacija",
       icon: FileText,
