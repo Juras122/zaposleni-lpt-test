@@ -74,7 +74,7 @@ export const ProfileSidebar = ({ profile }: ProfileSidebarProps) => {
       label: "Svetlobna signalizacija",
       icon: FileText,
       items: [
-        { id: "SS", label: "Semaforizacija", icon: FileText }
+        { id: "SS", label: "Semaforizacija", icon: FileText },
         { id: "SS_SE_stat", label: "Semaforizacija statistika", icon: ChartColumnBig },
         { id: "sdms", label: "SDMS", icon: Rss, external: "https://sdms.lpt.si" },
       ],
