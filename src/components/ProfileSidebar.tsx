@@ -60,6 +60,7 @@ export const ProfileSidebar = ({ profile }: ProfileSidebarProps) => {
         },
         { id: "NSZ", label: "Zapore", icon: FileText },
         { id: "sdms", label: "SDMS", icon: FileText, external: "https://sdms.lpt.si" },
+        { id: "NS_TO_stat", label: "Talne označbe statistika", icon: FileText },
       ],
     },
     {
@@ -129,7 +130,7 @@ export const ProfileSidebar = ({ profile }: ProfileSidebarProps) => {
             {menuSegments.map((segment, index) => {
               // Preveri dovoljenje za ta segment
               if (!hasPermission(index)) return null;
-              
+
               const hasActiveItem = segment.items.some((item) => item.active);
 
               return (
