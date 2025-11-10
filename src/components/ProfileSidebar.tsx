@@ -15,6 +15,7 @@ import {
   Paintbrush,
   Construction,
   TrafficCone,
+  SquareParking,
 } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
@@ -83,10 +84,13 @@ export const ProfileSidebar = ({ profile }: ProfileSidebarProps) => {
         { id: "sdms", label: "SDMS", icon: Rss, external: "https://sdms.lpt.si" },
       ],
     },
-    { id: "PKA", label: "Parkirišča", icon: FileText, 
-    items:
+    {
+      id: "PKA",
+      label: "Parkirišča",
+      icon: FileText,
+      items: [{ id: "PARK", label: "Parkireišča", icon: SquareParking }],
     },
-    
+
     {
       id: "drugo-segment",
       label: "Druge storitve",
