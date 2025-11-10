@@ -197,13 +197,13 @@ export const ProfileSidebar = ({ profile }: ProfileSidebarProps) => {
                         );
                       })}
 
-                      {/* Placeholder za prihodnjo statistiko */}
-                      {hasActiveItem && (
-                        <div className="mt-2 rounded-md bg-muted/50 p-2 text-xs text-muted-foreground">
-                          <p className="font-medium mb-1">Statistika</p>
-                          <p>Kmalu na voljo...</p>
-                        </div>
-                      )}
+                      //{/* Placeholder za prihodnjo statistiko */}
+                      //{//hasActiveItem && (
+                      //  <div className="mt-2 rounded-md bg-muted/50 p-2 text-xs text-muted-foreground">
+                      //    <p className="font-medium mb-1">Statistika</p>
+                      //    <p>Kmalu na voljo...</p>
+                      //  </div>
+                      //)}
                     </div>
                   </AccordionContent>
                 </AccordionItem>
