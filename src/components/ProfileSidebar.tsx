@@ -1,6 +1,6 @@
 import { UserProfile } from "@/types";
 import { Card } from "@/components/ui/card";
-import { User, Clock, FileText, Package, Users, Calculator, DollarSign, ChevronDown, stats-chart } from "lucide-react";
+import { User, Clock, FileText, Package, Users, Calculator, DollarSign, ChevronDown } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 
