@@ -10,6 +10,7 @@ import {
   DollarSign,
   ChevronDown,
   ChartColumnBig,
+  Rss,
 } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
@@ -63,7 +64,7 @@ export const ProfileSidebar = ({ profile }: ProfileSidebarProps) => {
           active: currentPath === "/work-orders" || currentPath.startsWith("/work-order/"),
         },
         { id: "NSZ", label: "Zapore", icon: FileText },
-        { id: "sdms", label: "SDMS", icon: FileText, external: "https://sdms.lpt.si" },
+        { id: "sdms", label: "SDMS", icon: Rss, external: "https://sdms.lpt.si" },
         { id: "NS_TO_stat", label: "Talne označbe statistika", icon: ChartColumnBig },
         { id: "NS_ZA_stat", label: "Zapore statistika", icon: ChartColumnBig },
       ],
@@ -72,7 +73,11 @@ export const ProfileSidebar = ({ profile }: ProfileSidebarProps) => {
       id: "svetlobna-segment",
       label: "Svetlobna signalizacija",
       icon: FileText,
-      items: [{ id: "SS", label: "Semaforizacija", icon: FileText }],
+      items: [
+        { id: "SS", label: "Semaforizacija", icon: FileText }
+        { id: "SS_SE_stat", label: "Semaforizacija statistika", icon: ChartColumnBig },
+        { id: "sdms", label: "SDMS", icon: Rss, external: "https://sdms.lpt.si" },
+      ],
     },
     {
       id: "drugo-segment",
