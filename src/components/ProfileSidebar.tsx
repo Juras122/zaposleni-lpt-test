@@ -49,6 +49,7 @@ export const ProfileSidebar = ({ profile }: ProfileSidebarProps) => {
           path: `/work-hours?id=${userId}`,
           active: currentPath === "/work-hours",
         },
+        { id: "PROF_USER_stat", label: "Osebna statistika", icon: ChartColumnBig },
       ],
     },
     {
