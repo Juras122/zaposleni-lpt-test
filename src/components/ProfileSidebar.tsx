@@ -66,8 +66,7 @@ export const ProfileSidebar = ({ profile }: ProfileSidebarProps) => {
         },
         { id: "NSZ", label: "Zapore", icon: FileText },
         { id: "sdms", label: "SDMS", icon: Rss, external: "https://sdms.lpt.si" },
-        { id: "NS_TO_stat", label: "Talne označbe statistika", icon: ChartColumnBig },
-        { id: "NS_ZA_stat", label: "Zapore statistika", icon: ChartColumnBig },
+        { id: "NS_stat", label: "Statistika", icon: ChartColumnBig },
       ],
     },
     {
@@ -76,7 +75,7 @@ export const ProfileSidebar = ({ profile }: ProfileSidebarProps) => {
       icon: FileText,
       items: [
         { id: "SS", label: "Semaforizacija", icon: FileText },
-        { id: "SS_SE_stat", label: "Semaforizacija statistika", icon: ChartColumnBig },
+        { id: "SS_stat", label: "Semaforizacija statistika", icon: ChartColumnBig },
         { id: "sdms", label: "SDMS", icon: Rss, external: "https://sdms.lpt.si" },
       ],
     },
