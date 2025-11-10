@@ -1,6 +1,6 @@
 import { UserProfile } from "@/types";
 import { Card } from "@/components/ui/card";
-import { User, Clock, FileText, Package, Users, Calculator, DollarSign, ChevronDown, BarChart } from "lucide-react";
+import { User, Clock, FileText, Package, Users, Calculator, DollarSign, ChevronDown, BarChart,arrow-big-left } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 
@@ -60,7 +60,7 @@ export const ProfileSidebar = ({ profile }: ProfileSidebarProps) => {
         },
         { id: "NSZ", label: "Zapore", icon: FileText },
         { id: "sdms", label: "SDMS", icon: FileText, external: "https://sdms.lpt.si" },
-        { id: "NS_TO_stat", label: "Talne označbe statistika", icon: BarChart },
+        { id: "NS_TO_stat", label: "Talne označbe statistika", icon: arrow-big-left },
         { id: "NS_ZA_stat", label: "Zapore statistika", icon: BarChart },
       ],
     },
