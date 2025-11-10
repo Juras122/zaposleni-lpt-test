@@ -60,7 +60,8 @@ export const ProfileSidebar = ({ profile }: ProfileSidebarProps) => {
         },
         { id: "NSZ", label: "Zapore", icon: FileText },
         { id: "sdms", label: "SDMS", icon: FileText, external: "https://sdms.lpt.si" },
-        { id: "NS_TO_stat", label: "Talne označbe statistika", icon: FileText },
+        { id: "NS_TO_stat", label: "Talne označbe statistika", icon: ChartBar },
+        { id: "NS_ZA_stat", label: "Zapore statistika", icon: ChartBar },
       ],
     },
     {
