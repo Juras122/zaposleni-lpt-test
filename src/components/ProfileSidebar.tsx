@@ -11,6 +11,10 @@ import {
   ChevronDown,
   ChartColumnBig,
   Rss,
+  Lightbulb,
+  Paintbrush,
+  Construction,
+  TrafficCone,
 } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
@@ -55,16 +59,16 @@ export const ProfileSidebar = ({ profile }: ProfileSidebarProps) => {
     {
       id: "nesvetlobna-segment",
       label: "Nesvetlobna signalizacija",
-      icon: FileText,
+      icon: TrafficCone,
       items: [
         {
           id: "pdn",
           label: "Talne označbe",
-          icon: FileText,
+          icon: Paintbrush,
           path: `/work-orders?id=${userId}`,
           active: currentPath === "/work-orders" || currentPath.startsWith("/work-order/"),
         },
-        { id: "NSZ", label: "Zapore", icon: FileText },
+        { id: "NSZ", label: "Zapore", icon: Construction },
         { id: "sdms", label: "SDMS", icon: Rss, external: "https://sdms.lpt.si" },
         { id: "NS_stat", label: "Statistika", icon: ChartColumnBig },
       ],
@@ -72,20 +76,23 @@ export const ProfileSidebar = ({ profile }: ProfileSidebarProps) => {
     {
       id: "svetlobna-segment",
       label: "Svetlobna signalizacija",
-      icon: FileText,
+      icon: Lightbulb,
       items: [
-        { id: "SS", label: "Semaforizacija", icon: FileText },
+        { id: "SS", label: "Semaforizacija", icon: Lightbulb },
         { id: "SS_stat", label: "Semaforizacija statistika", icon: ChartColumnBig },
         { id: "sdms", label: "SDMS", icon: Rss, external: "https://sdms.lpt.si" },
       ],
     },
+    { id: "PKA", label: "Parkirišča", icon: FileText, 
+    items:
+    },
+    
     {
       id: "drugo-segment",
       label: "Druge storitve",
       icon: Package,
       items: [
         { id: "OPT", label: "Optika", icon: FileText },
-        { id: "PKA", label: "Parkirišča", icon: FileText },
         { id: "TRZ", label: "Tržnice", icon: FileText },
         { id: "PAJ", label: "Odvoz vozil", icon: FileText },
       ],
