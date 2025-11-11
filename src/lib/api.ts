@@ -203,3 +203,12 @@ export async function updateWorkEntry(entryId: string, entryData: {
   
   return handleResponse<WorkEntry>(response);
 }
+
+// Funkcija 14: Brisanje work entry
+export async function deleteWorkEntry(entryId: string): Promise<void> {
+  const response = await fetch(`${BASE_URL}/work-entries/${entryId}`, {
+    method: 'DELETE',
+  });
+  
+  await handleResponse(response);
+}

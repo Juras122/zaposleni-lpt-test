@@ -19,7 +19,7 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { fetchUserProfile, fetchWorkOrderDetail, addWorkEntry, fetchWorkEntries, updateWorkOrder, deleteWorkOrder, updateWorkEntry } from "@/lib/api";
+import { fetchUserProfile, fetchWorkOrderDetail, addWorkEntry, fetchWorkEntries, updateWorkOrder, deleteWorkOrder, updateWorkEntry, deleteWorkEntry } from "@/lib/api";
 import { UserProfile, WorkOrderDetail, WorkEntry } from "@/types";
 import { ArrowLeft, Calendar, MapPin, Package, User, FileText, Plus, Pencil, Trash2, CheckCircle2 } from "lucide-react";
 import { toast } from "sonner";
@@ -307,6 +307,21 @@ const WorkOrderDetailPage = () => {
       toast.error("Napaka pri posodabljanju popisa dela");
     } finally {
       setIsSaving(false);
+    }
+  };
+
+  const handleDeleteEntry = async (entryId: string) => {
+    setIsDeleting(true);
+
+    try {
+      await deleteWorkEntry(entryId);
+      setWorkEntries(workEntries.filter(e => e.id !== entryId));
+      toast.success("Popis dela uspešno izbrisan");
+    } catch (error) {
+      console.error("Error deleting work entry:", error);
+      toast.error("Napaka pri brisanju popisa dela");
+    } finally {
+      setIsDeleting(false);
     }
   };
 
@@ -817,15 +832,43 @@ const WorkOrderDetailPage = () => {
                               })}
                             </TableCell>
                             <TableCell className="text-right">
-                              <Button
-                                variant="ghost"
-                                size="sm"
-                                onClick={() => handleOpenEditEntryDialog(entry)}
-                                className="gap-2"
-                              >
-                                <Pencil className="h-4 w-4" />
-                                Uredi
-                              </Button>
+                              <div className="flex justify-end gap-2">
+                                <Button
+                                  variant="ghost"
+                                  size="sm"
+                                  onClick={() => handleOpenEditEntryDialog(entry)}
+                                  className="gap-2"
+                                >
+                                  <Pencil className="h-4 w-4" />
+                                  Uredi
+                                </Button>
+                                <AlertDialog>
+                                  <AlertDialogTrigger asChild>
+                                    <Button variant="ghost" size="sm" className="gap-2 text-destructive hover:text-destructive">
+                                      <Trash2 className="h-4 w-4" />
+                                      Izbriši
+                                    </Button>
+                                  </AlertDialogTrigger>
+                                  <AlertDialogContent>
+                                    <AlertDialogHeader>
+                                      <AlertDialogTitle>Ste prepričani?</AlertDialogTitle>
+                                      <AlertDialogDescription>
+                                        To dejanje je nepovratno. Popis dela bo trajno izbrisan iz evidence.
+                                      </AlertDialogDescription>
+                                    </AlertDialogHeader>
+                                    <AlertDialogFooter>
+                                      <AlertDialogCancel>Prekliči</AlertDialogCancel>
+                                      <AlertDialogAction 
+                                        onClick={() => handleDeleteEntry(entry.id)} 
+                                        disabled={isDeleting}
+                                        className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                                      >
+                                        {isDeleting ? "Brisanje..." : "Izbriši"}
+                                      </AlertDialogAction>
+                                    </AlertDialogFooter>
+                                  </AlertDialogContent>
+                                </AlertDialog>
+                              </div>
                             </TableCell>
                           </TableRow>
                         ))}
