@@ -3,6 +3,7 @@ import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { Header } from "@/components/Header";
 import { ProfileSidebar } from "@/components/ProfileSidebar";
 import { Card } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -234,6 +235,34 @@ const WorkOrderDetailPage = () => {
     }
   };
 
+  const getStatusColor = (status: string) => {
+    switch (status.toLowerCase()) {
+      case "aktiven":
+        return "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400";
+      case "cakanje":
+        return "bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400";
+      case "vpripravi":
+        return "bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400";
+      case "zakljucen":
+        return "bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-400";
+      case "preklican":
+        return "bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400";
+      default:
+        return "bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-400";
+    }
+  };
+
+  const getStatusLabel = (status: string) => {
+    switch (status.toLowerCase()) {
+      case "aktiven": return "Aktiven";
+      case "cakanje": return "Čakanje";
+      case "vpripravi": return "V pripravi";
+      case "zakljucen": return "Zaključen";
+      case "preklican": return "Preklican";
+      default: return status;
+    }
+  };
+
   if (isLoading) {
     return (
       <div className="flex min-h-screen items-center justify-center">
@@ -428,7 +457,9 @@ const WorkOrderDetailPage = () => {
                     <CheckCircle2 className="mt-1 h-5 w-5 text-primary" />
                     <div>
                       <p className="text-sm font-medium text-muted-foreground">Status</p>
-                      <p className="font-medium">{orderDetail.status}</p>
+                      <Badge className={getStatusColor(orderDetail.status)}>
+                        {getStatusLabel(orderDetail.status)}
+                      </Badge>
                     </div>
                   </div>
                   <div className="flex items-start gap-3">
