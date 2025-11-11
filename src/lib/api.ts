@@ -1,5 +1,6 @@
 // api.ts (Posodobljena različica)
 
+import { ulid } from 'ulid';
 import { UserProfile, WorkHour, WorkOrder, WorkOrderDetail, WarehouseItem, WorkEntry } from '@/types';
 
 // *** 1. Nastavitev baznega URL-ja ***
@@ -94,13 +95,20 @@ export async function addWorkEntry(entry: {
   stElementov?: string;
   material?: string;
   kvadratura?: string;
+  id?: string;
 }): Promise<WorkEntry> {
+  // Generiraj ULID če ID ni podan (26 znakov, manj kot max 30)
+  const entryWithId = {
+    ...entry,
+    id: entry.id || ulid()
+  };
+
   const response = await fetch(`${BASE_URL}/work-entries`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
     },
-    body: JSON.stringify(entry),
+    body: JSON.stringify(entryWithId),
   });
   
   return handleResponse<WorkEntry>(response);
