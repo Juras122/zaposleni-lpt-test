@@ -38,7 +38,7 @@ export const ProfileSidebar = ({ profile }: ProfileSidebarProps) => {
   const menuSegments = [
     {
       id: "profil-segment",
-      label: "Profil & Čas",
+      label: "Nadzorna plošča",
       icon: User,
       items: [
         {
