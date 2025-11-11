@@ -54,6 +54,7 @@ const WorkOrderDetailPage = () => {
   const [editNaslov, setEditNaslov] = useState("");
   const [editNarocnik, setEditNarocnik] = useState("");
   const [editIzvajalec, setEditIzvajalec] = useState("");
+  const [editStatus, setEditStatus] = useState("");
   const [editLokacija, setEditLokacija] = useState("");
   const [editVrsta, setEditVrsta] = useState("");
   const [editMaterial, setEditMaterial] = useState("");
@@ -164,6 +165,7 @@ const WorkOrderDetailPage = () => {
       setEditNaslov(orderDetail.naslov);
       setEditNarocnik(orderDetail.narocnik);
       setEditIzvajalec(orderDetail.izvajalec);
+      setEditStatus(orderDetail.status);
       setEditLokacija(orderDetail.lokacija);
       setEditVrsta(orderDetail.vrsta);
       setEditMaterial(orderDetail.material);
@@ -192,13 +194,13 @@ const WorkOrderDetailPage = () => {
         naslov: editNaslov,
         narocnik: editNarocnik,
         izvajalec: editIzvajalec,
+        status: editStatus,
         lokacija: editLokacija,
         vrsta: editVrsta,
         material: editMaterial,
         d_razpisa: editDRazpisa,
         r_razpisa: editRRazpisa,
         opis: editOpis,
-        status: orderDetail?.status,
       });
 
       setOrderDetail(updatedOrder);
@@ -335,6 +337,21 @@ const WorkOrderDetailPage = () => {
                       onChange={(e) => setEditIzvajalec(e.target.value)}
                       placeholder="Vnesite izvajalca"
                     />
+                  </div>
+                  <div className="grid gap-2">
+                    <Label htmlFor="edit-status">Status *</Label>
+                    <Select value={editStatus} onValueChange={setEditStatus}>
+                      <SelectTrigger className="bg-background">
+                        <SelectValue placeholder="Izberite status" />
+                      </SelectTrigger>
+                      <SelectContent className="bg-popover z-50">
+                        <SelectItem value="aktiven">Aktiven</SelectItem>
+                        <SelectItem value="zakljucen">Zaključen</SelectItem>
+                        <SelectItem value="preklican">Preklican</SelectItem>
+                        <SelectItem value="cakanje">Čakanje</SelectItem>
+                        <SelectItem value="vpripravi">V pripravi</SelectItem>
+                      </SelectContent>
+                    </Select>
                   </div>
                   <div className="grid gap-2">
                     <Label htmlFor="edit-lokacija">Lokacija</Label>
