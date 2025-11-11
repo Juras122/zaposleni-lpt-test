@@ -20,7 +20,7 @@ import { Input } from "@/components/ui/input";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { fetchUserProfile, fetchWorkOrderDetail, addWorkEntry, fetchWorkEntries, updateWorkOrder, deleteWorkOrder } from "@/lib/api";
 import { UserProfile, WorkOrderDetail, WorkEntry } from "@/types";
-import { ArrowLeft, Calendar, MapPin, Package, User, FileText, Plus, Pencil, Trash2 } from "lucide-react";
+import { ArrowLeft, Calendar, MapPin, Package, User, FileText, Plus, Pencil, Trash2, CheckCircle2 } from "lucide-react";
 import { toast } from "sonner";
 import {
   AlertDialog,
@@ -407,6 +407,13 @@ const WorkOrderDetailPage = () => {
               <Card className="p-6 shadow-elegant">
                 <h2 className="mb-4 text-lg font-semibold">Osnovni podatki</h2>
                 <div className="space-y-4">
+                  <div className="flex items-start gap-3">
+                    <CheckCircle2 className="mt-1 h-5 w-5 text-primary" />
+                    <div>
+                      <p className="text-sm font-medium text-muted-foreground">Status</p>
+                      <p className="font-medium">{orderDetail.status}</p>
+                    </div>
+                  </div>
                   <div className="flex items-start gap-3">
                     <User className="mt-1 h-5 w-5 text-primary" />
                     <div>
