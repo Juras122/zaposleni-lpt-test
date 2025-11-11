@@ -149,3 +149,37 @@ export async function createWorkOrder(orderData: {
   
   return handleResponse<WorkOrderDetail>(response);
 }
+
+// Funkcija 11: Posodabljanje delovnega naloga
+export async function updateWorkOrder(serijska: string, orderData: {
+  naslov?: string;
+  narocnik?: string;
+  izvajalec?: string;
+  status?: string;
+  lokacija?: string;
+  vrsta?: string;
+  material?: string;
+  d_razpisa?: string;
+  r_razpisa?: string;
+  opis?: string;
+  nacrt?: string;
+}): Promise<WorkOrderDetail> {
+  const response = await fetch(`${BASE_URL}/rdn/${serijska}`, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(orderData),
+  });
+  
+  return handleResponse<WorkOrderDetail>(response);
+}
+
+// Funkcija 12: Brisanje delovnega naloga
+export async function deleteWorkOrder(serijska: string): Promise<void> {
+  const response = await fetch(`${BASE_URL}/rdn/${serijska}`, {
+    method: 'DELETE',
+  });
+  
+  await handleResponse(response);
+}
