@@ -183,3 +183,23 @@ export async function deleteWorkOrder(serijska: string): Promise<void> {
   
   await handleResponse(response);
 }
+
+// Funkcija 13: Posodabljanje work entry
+export async function updateWorkEntry(entryId: string, entryData: {
+  nazivElementa?: string;
+  znacilka?: string;
+  dolzina?: string;
+  stElementov?: string;
+  material?: string;
+  kvadratura?: string;
+}): Promise<WorkEntry> {
+  const response = await fetch(`${BASE_URL}/work-entries/${entryId}`, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(entryData),
+  });
+  
+  return handleResponse<WorkEntry>(response);
+}

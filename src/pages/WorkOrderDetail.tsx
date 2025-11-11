@@ -19,7 +19,7 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { fetchUserProfile, fetchWorkOrderDetail, addWorkEntry, fetchWorkEntries, updateWorkOrder, deleteWorkOrder } from "@/lib/api";
+import { fetchUserProfile, fetchWorkOrderDetail, addWorkEntry, fetchWorkEntries, updateWorkOrder, deleteWorkOrder, updateWorkEntry } from "@/lib/api";
 import { UserProfile, WorkOrderDetail, WorkEntry } from "@/types";
 import { ArrowLeft, Calendar, MapPin, Package, User, FileText, Plus, Pencil, Trash2, CheckCircle2 } from "lucide-react";
 import { toast } from "sonner";
@@ -45,11 +45,13 @@ const WorkOrderDetailPage = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
+  const [isEditEntryDialogOpen, setIsEditEntryDialogOpen] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
   const [vrstaObelezbe, setVrstaObelezbe] = useState<string>("");
   const [dolzina, setDolzina] = useState("");
   const [steviloElementov, setSteviloElementov] = useState("");
+  const [currentEntry, setCurrentEntry] = useState<WorkEntry | null>(null);
   
   // Edit form states
   const [editNaslov, setEditNaslov] = useState("");
@@ -260,6 +262,51 @@ const WorkOrderDetailPage = () => {
       case "zakljucen": return "Zaključen";
       case "preklican": return "Preklican";
       default: return status;
+    }
+  };
+
+  const handleOpenEditEntryDialog = (entry: WorkEntry) => {
+    setCurrentEntry(entry);
+    setVrstaObelezbe(entry.naziv_elementa);
+    setDolzina(entry.dolzina || "");
+    setSteviloElementov(entry.st_elemtov || "");
+    setIsEditEntryDialogOpen(true);
+  };
+
+  const handleUpdateEntry = async () => {
+    if (!currentEntry) {
+      toast.error("Napaka: Ni izbranega vnosa");
+      return;
+    }
+
+    if (!vrstaObelezbe) {
+      toast.error("Prosim izberite vrsto označbe");
+      return;
+    }
+
+    setIsSaving(true);
+
+    try {
+      const updatedEntry = await updateWorkEntry(currentEntry.id, {
+        nazivElementa: vrstaObelezbe,
+        dolzina: dolzina || undefined,
+        stElementov: steviloElementov || undefined,
+      });
+
+      setWorkEntries(workEntries.map(e => e.id === updatedEntry.id ? updatedEntry : e));
+      toast.success("Popis dela uspešno posodobljen");
+
+      // Reset form
+      setVrstaObelezbe("");
+      setDolzina("");
+      setSteviloElementov("");
+      setCurrentEntry(null);
+      setIsEditEntryDialogOpen(false);
+    } catch (error) {
+      console.error("Error updating work entry:", error);
+      toast.error("Napaka pri posodabljanju popisa dela");
+    } finally {
+      setIsSaving(false);
     }
   };
 
@@ -640,6 +687,106 @@ const WorkOrderDetailPage = () => {
                       </DialogFooter>
                     </DialogContent>
                   </Dialog>
+
+                  <Dialog open={isEditEntryDialogOpen} onOpenChange={setIsEditEntryDialogOpen}>
+                    <DialogContent className="sm:max-w-[525px]">
+                      <DialogHeader>
+                        <DialogTitle>Uredi popis</DialogTitle>
+                        <DialogDescription>Posodobite popis dela</DialogDescription>
+                      </DialogHeader>
+                      <div className="grid gap-4 py-4">
+                        <div className="grid gap-2">
+                          <Select value={vrstaObelezbe} onValueChange={setVrstaObelezbe}>
+                            <SelectTrigger>
+                              <SelectValue placeholder="Izberite vrsto označbe" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="STOP">STOP</SelectItem>
+                              <SelectItem value="STOP (0,5x0,3)">STOP (0,5x0,3)</SelectItem>
+                              <SelectItem value="PREHOD ZA PEŠCE (NAVADEN)">PREHOD ZA PEŠCE (NAVADEN)</SelectItem>
+                              <SelectItem value="PREHOD ZA PEŠCE (KOCKE)">PREHOD ZA PEŠCE (KOCKE)</SelectItem>
+                              <SelectItem value="GRBINA (VELIKA)">GRBINA (VELIKA)</SelectItem>
+                              <SelectItem value="GRBINA (MALA)">GRBINA (MALA)</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </div>
+
+                        {vrstaObelezbe === "STOP" && (
+                          <div className="grid gap-2">
+                            <Label htmlFor="edit-dolzina">Dolžina (m)</Label>
+                            <Input
+                              id="edit-dolzina"
+                              type="number"
+                              step="0.01"
+                              placeholder="Vnesite dolžino"
+                              value={dolzina}
+                              onChange={(e) => setDolzina(e.target.value)}
+                            />
+                          </div>
+                        )}
+
+                        {(vrstaObelezbe === "STOP (0,5x0,3)" ||
+                          vrstaObelezbe === "GRBINA (VELIKA)" ||
+                          vrstaObelezbe === "GRBINA (MALA)") && (
+                          <div className="grid gap-2">
+                            <Label htmlFor="edit-steviloElementov">Število elementov</Label>
+                            <Input
+                              id="edit-steviloElementov"
+                              type="number"
+                              placeholder="Vnesite število elementov"
+                              value={steviloElementov}
+                              onChange={(e) => setSteviloElementov(e.target.value)}
+                            />
+                          </div>
+                        )}
+
+                        {(vrstaObelezbe === "PREHOD ZA PEŠCE (NAVADEN)" ||
+                          vrstaObelezbe === "PREHOD ZA PEŠCE (KOCKE)") && (
+                          <>
+                            <div className="grid gap-2">
+                              <Label htmlFor="edit-dolzina">Dolžina (m)</Label>
+                              <Input
+                                id="edit-dolzina"
+                                type="number"
+                                step="0.01"
+                                placeholder="Vnesite dolžino"
+                                value={dolzina}
+                                onChange={(e) => setDolzina(e.target.value)}
+                              />
+                            </div>
+                            <div className="grid gap-2">
+                              <Label htmlFor="edit-steviloElementov">Število elementov</Label>
+                              <Input
+                                id="edit-steviloElementov"
+                                type="number"
+                                placeholder="Vnesite število elementov"
+                                value={steviloElementov}
+                                onChange={(e) => setSteviloElementov(e.target.value)}
+                              />
+                            </div>
+                          </>
+                        )}
+                      </div>
+                      <DialogFooter>
+                        <Button
+                          variant="outline"
+                          onClick={() => {
+                            setIsEditEntryDialogOpen(false);
+                            setVrstaObelezbe("");
+                            setDolzina("");
+                            setSteviloElementov("");
+                            setCurrentEntry(null);
+                          }}
+                          disabled={isSaving}
+                        >
+                          Prekliči
+                        </Button>
+                        <Button onClick={handleUpdateEntry} disabled={isSaving}>
+                          {isSaving ? "Shranjevanje..." : "Shrani"}
+                        </Button>
+                      </DialogFooter>
+                    </DialogContent>
+                  </Dialog>
                 </div>
 
                 {workEntries.length > 0 ? (
@@ -651,6 +798,7 @@ const WorkOrderDetailPage = () => {
                           <TableHead>Dolžina (m)</TableHead>
                           <TableHead>Število elementov</TableHead>
                           <TableHead>Datum vnosa</TableHead>
+                          <TableHead className="text-right">Akcije</TableHead>
                         </TableRow>
                       </TableHeader>
                       <TableBody>
@@ -667,6 +815,17 @@ const WorkOrderDetailPage = () => {
                                 hour: "2-digit",
                                 minute: "2-digit",
                               })}
+                            </TableCell>
+                            <TableCell className="text-right">
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                onClick={() => handleOpenEditEntryDialog(entry)}
+                                className="gap-2"
+                              >
+                                <Pencil className="h-4 w-4" />
+                                Uredi
+                              </Button>
                             </TableCell>
                           </TableRow>
                         ))}
