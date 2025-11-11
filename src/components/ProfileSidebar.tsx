@@ -17,6 +17,7 @@ import {
   TrafficCone,
   SquareParking,
   Warehouse,
+  FilePen,
 } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
@@ -97,6 +98,7 @@ export const ProfileSidebar = ({ profile }: ProfileSidebarProps) => {
       label: "Skladišče",
       icon: Warehouse,
       items: [
+        { id: "uskld", label: "Upravljanje skladišča", icon: FilePen },
         {
           id: "skld",
           label: "Stanje skladišča",
