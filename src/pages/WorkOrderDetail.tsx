@@ -19,9 +19,30 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { fetchUserProfile, fetchWorkOrderDetail, addWorkEntry, fetchWorkEntries, updateWorkOrder, deleteWorkOrder, updateWorkEntry, deleteWorkEntry } from "@/lib/api";
+import {
+  fetchUserProfile,
+  fetchWorkOrderDetail,
+  addWorkEntry,
+  fetchWorkEntries,
+  updateWorkOrder,
+  deleteWorkOrder,
+  updateWorkEntry,
+  deleteWorkEntry,
+} from "@/lib/api";
 import { UserProfile, WorkOrderDetail, WorkEntry } from "@/types";
-import { ArrowLeft, Calendar, MapPin, Package, User, FileText, Plus, Pencil, Trash2, CheckCircle2, Download } from "lucide-react";
+import {
+  ArrowLeft,
+  Calendar,
+  MapPin,
+  Package,
+  User,
+  FileText,
+  Plus,
+  Pencil,
+  Trash2,
+  CheckCircle2,
+  Download,
+} from "lucide-react";
 import { toast } from "sonner";
 import {
   AlertDialog,
@@ -34,8 +55,8 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import jsPDF from 'jspdf';
-import autoTable from 'jspdf-autotable';
+import jsPDF from "jspdf";
+import autoTable from "jspdf-autotable";
 
 const WorkOrderDetailPage = () => {
   const { serijska } = useParams<{ serijska: string }>();
@@ -54,7 +75,7 @@ const WorkOrderDetailPage = () => {
   const [dolzina, setDolzina] = useState("");
   const [steviloElementov, setSteviloElementov] = useState("");
   const [currentEntry, setCurrentEntry] = useState<WorkEntry | null>(null);
-  
+
   // Edit form states
   const [editNaslov, setEditNaslov] = useState("");
   const [editNarocnik, setEditNarocnik] = useState("");
@@ -258,12 +279,18 @@ const WorkOrderDetailPage = () => {
 
   const getStatusLabel = (status: string) => {
     switch (status.toLowerCase()) {
-      case "aktiven": return "Aktiven";
-      case "cakanje": return "Čakanje";
-      case "vpripravi": return "V pripravi";
-      case "zakljucen": return "Zaključen";
-      case "preklican": return "Preklican";
-      default: return status;
+      case "aktiven":
+        return "Aktiven";
+      case "cakanje":
+        return "Čakanje";
+      case "vpripravi":
+        return "V pripravi";
+      case "zakljucen":
+        return "Zaključen";
+      case "preklican":
+        return "Preklican";
+      default:
+        return status;
     }
   };
 
@@ -271,7 +298,7 @@ const WorkOrderDetailPage = () => {
     setCurrentEntry(entry);
     setVrstaObelezbe(entry.naziv_elementa);
     setDolzina(entry.dolzina || "");
-    setSteviloElementov(entry.st_elemtov || "");
+    setSteviloElementov(entry.st_elemetov || "");
     setIsEditEntryDialogOpen(true);
   };
 
@@ -295,7 +322,7 @@ const WorkOrderDetailPage = () => {
         stElementov: steviloElementov || undefined,
       });
 
-      setWorkEntries(workEntries.map(e => e.id === updatedEntry.id ? updatedEntry : e));
+      setWorkEntries(workEntries.map((e) => (e.id === updatedEntry.id ? updatedEntry : e)));
       toast.success("Popis dela uspešno posodobljen");
 
       // Reset form
@@ -317,7 +344,7 @@ const WorkOrderDetailPage = () => {
 
     try {
       await deleteWorkEntry(entryId);
-      setWorkEntries(workEntries.filter(e => e.id !== entryId));
+      setWorkEntries(workEntries.filter((e) => e.id !== entryId));
       toast.success("Popis dela uspešno izbrisan");
     } catch (error) {
       console.error("Error deleting work entry:", error);
@@ -332,157 +359,157 @@ const WorkOrderDetailPage = () => {
 
     const doc = new jsPDF();
     const pageWidth = doc.internal.pageSize.width;
-    
+
     // NASLOV DOKUMENTA
     doc.setFontSize(20);
-    doc.setFont('helvetica', 'bold');
-    doc.text('POPIS DELA - DELOVNI NALOG', pageWidth / 2, 20, { align: 'center' });
-    
+    doc.setFont("helvetica", "bold");
+    doc.text("POPIS DELA - DELOVNI NALOG", pageWidth / 2, 20, { align: "center" });
+
     // Serijska številka
     doc.setFontSize(16);
     doc.setTextColor(41, 128, 185);
-    doc.text(orderDetail.serijska, pageWidth / 2, 30, { align: 'center' });
-    
+    doc.text(orderDetail.serijska, pageWidth / 2, 30, { align: "center" });
+
     // Reset barve
     doc.setTextColor(0, 0, 0);
-    doc.setFont('helvetica', 'normal');
-    
+    doc.setFont("helvetica", "normal");
+
     // OSNOVNI PODATKI
     let yPosition = 45;
-    
+
     doc.setFontSize(14);
-    doc.setFont('helvetica', 'bold');
-    doc.text('Osnovni podatki', 14, yPosition);
+    doc.setFont("helvetica", "bold");
+    doc.text("Osnovni podatki", 14, yPosition);
     yPosition += 10;
-    
+
     doc.setFontSize(10);
-    doc.setFont('helvetica', 'normal');
-    
+    doc.setFont("helvetica", "normal");
+
     const basicInfo = [
-      ['Naslov:', orderDetail.naslov],
-      ['Naročnik:', orderDetail.narocnik || '-'],
-      ['Izvajalec:', orderDetail.izvajalec || '-'],
-      ['Status:', getStatusLabel(orderDetail.status)],
-      ['Lokacija:', orderDetail.lokacija || '-'],
-      ['Vrsta dela:', orderDetail.vrsta || '-'],
-      ['Material:', orderDetail.material || '-'],
-      ['Datum razpisa:', orderDetail.d_razpisa || '-'],
-      ['Rok razpisa:', orderDetail.r_razpisa || '-'],
+      ["Naslov:", orderDetail.naslov],
+      ["Naročnik:", orderDetail.narocnik || "-"],
+      ["Izvajalec:", orderDetail.izvajalec || "-"],
+      ["Status:", getStatusLabel(orderDetail.status)],
+      ["Lokacija:", orderDetail.lokacija || "-"],
+      ["Vrsta dela:", orderDetail.vrsta || "-"],
+      ["Material:", orderDetail.material || "-"],
+      ["Datum razpisa:", orderDetail.d_razpisa || "-"],
+      ["Rok razpisa:", orderDetail.r_razpisa || "-"],
     ];
-    
+
     autoTable(doc, {
       startY: yPosition,
       head: [],
       body: basicInfo,
-      theme: 'plain',
+      theme: "plain",
       styles: { fontSize: 10, cellPadding: 2 },
       columnStyles: {
-        0: { fontStyle: 'bold', cellWidth: 40 },
-        1: { cellWidth: 'auto' }
+        0: { fontStyle: "bold", cellWidth: 40 },
+        1: { cellWidth: "auto" },
       },
-      margin: { left: 14 }
+      margin: { left: 14 },
     });
-    
+
     yPosition = (doc as any).lastAutoTable.finalY + 15;
-    
+
     // OPIS DELA
     if (orderDetail.opis) {
       doc.setFontSize(14);
-      doc.setFont('helvetica', 'bold');
-      doc.text('Opis dela', 14, yPosition);
+      doc.setFont("helvetica", "bold");
+      doc.text("Opis dela", 14, yPosition);
       yPosition += 8;
-      
+
       doc.setFontSize(10);
-      doc.setFont('helvetica', 'normal');
+      doc.setFont("helvetica", "normal");
       const splitOpis = doc.splitTextToSize(orderDetail.opis, pageWidth - 28);
       doc.text(splitOpis, 14, yPosition);
-      yPosition += (splitOpis.length * 5) + 10;
+      yPosition += splitOpis.length * 5 + 10;
     }
-    
+
     // Nova stran če je premalo prostora
     if (yPosition > 240) {
       doc.addPage();
       yPosition = 20;
     }
-    
+
     // TABELA WORK ENTRIES
     doc.setFontSize(14);
-    doc.setFont('helvetica', 'bold');
-    doc.text('Popis dela', 14, yPosition);
+    doc.setFont("helvetica", "bold");
+    doc.text("Popis dela", 14, yPosition);
     yPosition += 8;
-    
+
     if (workEntries.length > 0) {
       const tableData = workEntries.map((entry, index) => [
         (index + 1).toString(),
         entry.naziv_elementa,
-        entry.dolzina || '-',
-        entry.st_elemtov || '-',
-        new Date(entry.datum_vnosa).toLocaleDateString('sl-SI')
+        entry.dolzina || "-",
+        entry.st_elemtov || "-",
+        new Date(entry.datum_vnosa).toLocaleDateString("sl-SI"),
       ]);
-      
+
       autoTable(doc, {
         startY: yPosition,
-        head: [['#', 'Vrsta označbe', 'Dolžina (m)', 'Št. elementov', 'Datum vnosa']],
+        head: [["#", "Vrsta označbe", "Dolžina (m)", "Št. elementov", "Datum vnosa"]],
         body: tableData,
-        theme: 'striped',
+        theme: "striped",
         headStyles: {
           fillColor: [41, 128, 185],
           textColor: 255,
-          fontStyle: 'bold',
-          halign: 'center'
+          fontStyle: "bold",
+          halign: "center",
         },
         styles: {
           fontSize: 9,
-          cellPadding: 3
+          cellPadding: 3,
         },
         columnStyles: {
-          0: { halign: 'center', cellWidth: 15 },
+          0: { halign: "center", cellWidth: 15 },
           1: { cellWidth: 60 },
-          2: { halign: 'center', cellWidth: 30 },
-          3: { halign: 'center', cellWidth: 30 },
-          4: { halign: 'center', cellWidth: 35 }
+          2: { halign: "center", cellWidth: 30 },
+          3: { halign: "center", cellWidth: 30 },
+          4: { halign: "center", cellWidth: 35 },
         },
-        margin: { left: 14, right: 14 }
+        margin: { left: 14, right: 14 },
       });
-      
+
       // Skupno število elementov in dolžin
       yPosition = (doc as any).lastAutoTable.finalY + 10;
-      
+
       const totalDolzina = workEntries
-        .filter(e => e.dolzina)
+        .filter((e) => e.dolzina)
         .reduce((sum, e) => sum + parseFloat(e.dolzina!), 0)
         .toFixed(2);
-        
+
       const totalElementov = workEntries
-        .filter(e => e.st_elemtov)
+        .filter((e) => e.st_elemtov)
         .reduce((sum, e) => sum + parseInt(e.st_elemtov!), 0);
-      
+
       doc.setFontSize(10);
-      doc.setFont('helvetica', 'bold');
+      doc.setFont("helvetica", "bold");
       doc.text(`Skupna dolžina: ${totalDolzina} m`, 14, yPosition);
       doc.text(`Skupno število elementov: ${totalElementov}`, 14, yPosition + 7);
     } else {
       doc.setFontSize(10);
-      doc.setFont('helvetica', 'italic');
-      doc.text('Ni še nobenega vnosa.', 14, yPosition);
+      doc.setFont("helvetica", "italic");
+      doc.text("Ni še nobenega vnosa.", 14, yPosition);
     }
-    
+
     // FOOTER
     const pageCount = doc.internal.pages.length - 1;
     for (let i = 1; i <= pageCount; i++) {
       doc.setPage(i);
       doc.setFontSize(8);
-      doc.setFont('helvetica', 'normal');
+      doc.setFont("helvetica", "normal");
       doc.setTextColor(128, 128, 128);
-      const footerText = `Generiran: ${new Date().toLocaleString('sl-SI')} | Stran ${i} od ${pageCount}`;
-      doc.text(footerText, pageWidth / 2, doc.internal.pageSize.height - 10, { align: 'center' });
+      const footerText = `Generiran: ${new Date().toLocaleString("sl-SI")} | Stran ${i} od ${pageCount}`;
+      doc.text(footerText, pageWidth / 2, doc.internal.pageSize.height - 10, { align: "center" });
     }
-    
+
     // Shrani PDF
-    const fileName = `popis-dela-${orderDetail.serijska}-${new Date().toISOString().split('T')[0]}.pdf`;
+    const fileName = `popis-dela-${orderDetail.serijska}-${new Date().toISOString().split("T")[0]}.pdf`;
     doc.save(fileName);
-    
-    toast.success('PDF uspešno izvožen');
+
+    toast.success("PDF uspešno izvožen");
   };
 
   if (isLoading) {
@@ -679,9 +706,7 @@ const WorkOrderDetailPage = () => {
                     <CheckCircle2 className="mt-1 h-5 w-5 text-primary" />
                     <div>
                       <p className="text-sm font-medium text-muted-foreground">Status</p>
-                      <Badge className={getStatusColor(orderDetail.status)}>
-                        {getStatusLabel(orderDetail.status)}
-                      </Badge>
+                      <Badge className={getStatusColor(orderDetail.status)}>{getStatusLabel(orderDetail.status)}</Badge>
                     </div>
                   </div>
                   <div className="flex items-start gap-3">
@@ -768,8 +793,8 @@ const WorkOrderDetailPage = () => {
                 <div className="flex items-center justify-between mb-4">
                   <h2 className="text-lg font-semibold">Popis dela</h2>
                   <div className="flex gap-2">
-                    <Button 
-                      variant="outline" 
+                    <Button
+                      variant="outline"
                       onClick={handleExportToPDF}
                       className="gap-2"
                       disabled={!orderDetail || workEntries.length === 0}
@@ -784,60 +809,29 @@ const WorkOrderDetailPage = () => {
                           Dodaj
                         </Button>
                       </DialogTrigger>
-                    <DialogContent className="sm:max-w-[525px]">
-                      <DialogHeader>
-                        <DialogTitle>Dodaj popis</DialogTitle>
-                        <DialogDescription>Izberi vrsto označbe</DialogDescription>
-                      </DialogHeader>
-                      <div className="grid gap-4 py-4">
-                        <div className="grid gap-2">
-                          <Select value={vrstaObelezbe} onValueChange={setVrstaObelezbe}>
-                            <SelectTrigger>
-                              <SelectValue placeholder="Izberite vrsto označbe" />
-                            </SelectTrigger>
-                            <SelectContent>
-                              <SelectItem value="STOP">STOP</SelectItem>
-                              <SelectItem value="STOP (0,5x0,3)">STOP (0,5x0,3)</SelectItem>
-                              <SelectItem value="PREHOD ZA PEŠCE (NAVADEN)">PREHOD ZA PEŠCE (NAVADEN)</SelectItem>
-                              <SelectItem value="PREHOD ZA PEŠCE (KOCKE)">PREHOD ZA PEŠCE (KOCKE)</SelectItem>
-                              <SelectItem value="GRBINA (VELIKA)">GRBINA (VELIKA)</SelectItem>
-                              <SelectItem value="GRBINA (MALA)">GRBINA (MALA)</SelectItem>
-                            </SelectContent>
-                          </Select>
-                        </div>
-
-                        {vrstaObelezbe === "STOP" && (
+                      <DialogContent className="sm:max-w-[525px]">
+                        <DialogHeader>
+                          <DialogTitle>Dodaj popis</DialogTitle>
+                          <DialogDescription>Izberi vrsto označbe</DialogDescription>
+                        </DialogHeader>
+                        <div className="grid gap-4 py-4">
                           <div className="grid gap-2">
-                            <Label htmlFor="dolzina">Dolžina (m)</Label>
-                            <Input
-                              id="dolzina"
-                              type="number"
-                              step="0.01"
-                              placeholder="Vnesite dolžino"
-                              value={dolzina}
-                              onChange={(e) => setDolzina(e.target.value)}
-                            />
+                            <Select value={vrstaObelezbe} onValueChange={setVrstaObelezbe}>
+                              <SelectTrigger>
+                                <SelectValue placeholder="Izberite vrsto označbe" />
+                              </SelectTrigger>
+                              <SelectContent>
+                                <SelectItem value="STOP">STOP</SelectItem>
+                                <SelectItem value="STOP (0,5x0,3)">STOP (0,5x0,3)</SelectItem>
+                                <SelectItem value="PREHOD ZA PEŠCE (NAVADEN)">PREHOD ZA PEŠCE (NAVADEN)</SelectItem>
+                                <SelectItem value="PREHOD ZA PEŠCE (KOCKE)">PREHOD ZA PEŠCE (KOCKE)</SelectItem>
+                                <SelectItem value="GRBINA (VELIKA)">GRBINA (VELIKA)</SelectItem>
+                                <SelectItem value="GRBINA (MALA)">GRBINA (MALA)</SelectItem>
+                              </SelectContent>
+                            </Select>
                           </div>
-                        )}
 
-                        {(vrstaObelezbe === "STOP (0,5x0,3)" ||
-                          vrstaObelezbe === "GRBINA (VELIKA)" ||
-                          vrstaObelezbe === "GRBINA (MALA)") && (
-                          <div className="grid gap-2">
-                            <Label htmlFor="steviloElementov">Število elementov</Label>
-                            <Input
-                              id="steviloElementov"
-                              type="number"
-                              placeholder="Vnesite število elementov"
-                              value={steviloElementov}
-                              onChange={(e) => setSteviloElementov(e.target.value)}
-                            />
-                          </div>
-                        )}
-
-                        {(vrstaObelezbe === "PREHOD ZA PEŠCE (NAVADEN)" ||
-                          vrstaObelezbe === "PREHOD ZA PEŠCE (KOCKE)") && (
-                          <>
+                          {vrstaObelezbe === "STOP" && (
                             <div className="grid gap-2">
                               <Label htmlFor="dolzina">Dolžina (m)</Label>
                               <Input
@@ -849,6 +843,11 @@ const WorkOrderDetailPage = () => {
                                 onChange={(e) => setDolzina(e.target.value)}
                               />
                             </div>
+                          )}
+
+                          {(vrstaObelezbe === "STOP (0,5x0,3)" ||
+                            vrstaObelezbe === "GRBINA (VELIKA)" ||
+                            vrstaObelezbe === "GRBINA (MALA)") && (
                             <div className="grid gap-2">
                               <Label htmlFor="steviloElementov">Število elementov</Label>
                               <Input
@@ -859,46 +858,103 @@ const WorkOrderDetailPage = () => {
                                 onChange={(e) => setSteviloElementov(e.target.value)}
                               />
                             </div>
-                          </>
-                        )}
-                      </div>
-                      <DialogFooter>
-                        <Button variant="outline" onClick={() => setIsDialogOpen(false)} disabled={isSaving}>
-                          Prekliči
-                        </Button>
-                        <Button onClick={handleAddPopis} disabled={isSaving}>
-                          {isSaving ? "Shranjevanje..." : "Shrani"}
-                        </Button>
-                      </DialogFooter>
-                    </DialogContent>
-                  </Dialog>
+                          )}
+
+                          {(vrstaObelezbe === "PREHOD ZA PEŠCE (NAVADEN)" ||
+                            vrstaObelezbe === "PREHOD ZA PEŠCE (KOCKE)") && (
+                            <>
+                              <div className="grid gap-2">
+                                <Label htmlFor="dolzina">Dolžina (m)</Label>
+                                <Input
+                                  id="dolzina"
+                                  type="number"
+                                  step="0.01"
+                                  placeholder="Vnesite dolžino"
+                                  value={dolzina}
+                                  onChange={(e) => setDolzina(e.target.value)}
+                                />
+                              </div>
+                              <div className="grid gap-2">
+                                <Label htmlFor="steviloElementov">Število elementov</Label>
+                                <Input
+                                  id="steviloElementov"
+                                  type="number"
+                                  placeholder="Vnesite število elementov"
+                                  value={steviloElementov}
+                                  onChange={(e) => setSteviloElementov(e.target.value)}
+                                />
+                              </div>
+                            </>
+                          )}
+                        </div>
+                        <DialogFooter>
+                          <Button variant="outline" onClick={() => setIsDialogOpen(false)} disabled={isSaving}>
+                            Prekliči
+                          </Button>
+                          <Button onClick={handleAddPopis} disabled={isSaving}>
+                            {isSaving ? "Shranjevanje..." : "Shrani"}
+                          </Button>
+                        </DialogFooter>
+                      </DialogContent>
+                    </Dialog>
                   </div>
                 </div>
 
-                  <Dialog open={isEditEntryDialogOpen} onOpenChange={setIsEditEntryDialogOpen}>
-                    <DialogContent className="sm:max-w-[525px]">
-                      <DialogHeader>
-                        <DialogTitle>Uredi popis</DialogTitle>
-                        <DialogDescription>Posodobite popis dela</DialogDescription>
-                      </DialogHeader>
-                      <div className="grid gap-4 py-4">
-                        <div className="grid gap-2">
-                          <Select value={vrstaObelezbe} onValueChange={setVrstaObelezbe}>
-                            <SelectTrigger>
-                              <SelectValue placeholder="Izberite vrsto označbe" />
-                            </SelectTrigger>
-                            <SelectContent>
-                              <SelectItem value="STOP">STOP</SelectItem>
-                              <SelectItem value="STOP (0,5x0,3)">STOP (0,5x0,3)</SelectItem>
-                              <SelectItem value="PREHOD ZA PEŠCE (NAVADEN)">PREHOD ZA PEŠCE (NAVADEN)</SelectItem>
-                              <SelectItem value="PREHOD ZA PEŠCE (KOCKE)">PREHOD ZA PEŠCE (KOCKE)</SelectItem>
-                              <SelectItem value="GRBINA (VELIKA)">GRBINA (VELIKA)</SelectItem>
-                              <SelectItem value="GRBINA (MALA)">GRBINA (MALA)</SelectItem>
-                            </SelectContent>
-                          </Select>
-                        </div>
+                <Dialog open={isEditEntryDialogOpen} onOpenChange={setIsEditEntryDialogOpen}>
+                  <DialogContent className="sm:max-w-[525px]">
+                    <DialogHeader>
+                      <DialogTitle>Uredi popis</DialogTitle>
+                      <DialogDescription>Posodobite popis dela</DialogDescription>
+                    </DialogHeader>
+                    <div className="grid gap-4 py-4">
+                      <div className="grid gap-2">
+                        <Select value={vrstaObelezbe} onValueChange={setVrstaObelezbe}>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Izberite vrsto označbe" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="STOP">STOP</SelectItem>
+                            <SelectItem value="STOP (0,5x0,3)">STOP (0,5x0,3)</SelectItem>
+                            <SelectItem value="PREHOD ZA PEŠCE (NAVADEN)">PREHOD ZA PEŠCE (NAVADEN)</SelectItem>
+                            <SelectItem value="PREHOD ZA PEŠCE (KOCKE)">PREHOD ZA PEŠCE (KOCKE)</SelectItem>
+                            <SelectItem value="GRBINA (VELIKA)">GRBINA (VELIKA)</SelectItem>
+                            <SelectItem value="GRBINA (MALA)">GRBINA (MALA)</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
 
-                        {vrstaObelezbe === "STOP" && (
+                      {vrstaObelezbe === "STOP" && (
+                        <div className="grid gap-2">
+                          <Label htmlFor="edit-dolzina">Dolžina (m)</Label>
+                          <Input
+                            id="edit-dolzina"
+                            type="number"
+                            step="0.01"
+                            placeholder="Vnesite dolžino"
+                            value={dolzina}
+                            onChange={(e) => setDolzina(e.target.value)}
+                          />
+                        </div>
+                      )}
+
+                      {(vrstaObelezbe === "STOP (0,5x0,3)" ||
+                        vrstaObelezbe === "GRBINA (VELIKA)" ||
+                        vrstaObelezbe === "GRBINA (MALA)") && (
+                        <div className="grid gap-2">
+                          <Label htmlFor="edit-steviloElementov">Število elementov</Label>
+                          <Input
+                            id="edit-steviloElementov"
+                            type="number"
+                            placeholder="Vnesite število elementov"
+                            value={steviloElementov}
+                            onChange={(e) => setSteviloElementov(e.target.value)}
+                          />
+                        </div>
+                      )}
+
+                      {(vrstaObelezbe === "PREHOD ZA PEŠCE (NAVADEN)" ||
+                        vrstaObelezbe === "PREHOD ZA PEŠCE (KOCKE)") && (
+                        <>
                           <div className="grid gap-2">
                             <Label htmlFor="edit-dolzina">Dolžina (m)</Label>
                             <Input
@@ -910,11 +966,6 @@ const WorkOrderDetailPage = () => {
                               onChange={(e) => setDolzina(e.target.value)}
                             />
                           </div>
-                        )}
-
-                        {(vrstaObelezbe === "STOP (0,5x0,3)" ||
-                          vrstaObelezbe === "GRBINA (VELIKA)" ||
-                          vrstaObelezbe === "GRBINA (MALA)") && (
                           <div className="grid gap-2">
                             <Label htmlFor="edit-steviloElementov">Število elementov</Label>
                             <Input
@@ -925,55 +976,29 @@ const WorkOrderDetailPage = () => {
                               onChange={(e) => setSteviloElementov(e.target.value)}
                             />
                           </div>
-                        )}
-
-                        {(vrstaObelezbe === "PREHOD ZA PEŠCE (NAVADEN)" ||
-                          vrstaObelezbe === "PREHOD ZA PEŠCE (KOCKE)") && (
-                          <>
-                            <div className="grid gap-2">
-                              <Label htmlFor="edit-dolzina">Dolžina (m)</Label>
-                              <Input
-                                id="edit-dolzina"
-                                type="number"
-                                step="0.01"
-                                placeholder="Vnesite dolžino"
-                                value={dolzina}
-                                onChange={(e) => setDolzina(e.target.value)}
-                              />
-                            </div>
-                            <div className="grid gap-2">
-                              <Label htmlFor="edit-steviloElementov">Število elementov</Label>
-                              <Input
-                                id="edit-steviloElementov"
-                                type="number"
-                                placeholder="Vnesite število elementov"
-                                value={steviloElementov}
-                                onChange={(e) => setSteviloElementov(e.target.value)}
-                              />
-                            </div>
-                          </>
-                        )}
-                      </div>
-                      <DialogFooter>
-                        <Button
-                          variant="outline"
-                          onClick={() => {
-                            setIsEditEntryDialogOpen(false);
-                            setVrstaObelezbe("");
-                            setDolzina("");
-                            setSteviloElementov("");
-                            setCurrentEntry(null);
-                          }}
-                          disabled={isSaving}
-                        >
-                          Prekliči
-                        </Button>
-                        <Button onClick={handleUpdateEntry} disabled={isSaving}>
-                          {isSaving ? "Shranjevanje..." : "Shrani"}
-                        </Button>
-                      </DialogFooter>
-                    </DialogContent>
-                  </Dialog>
+                        </>
+                      )}
+                    </div>
+                    <DialogFooter>
+                      <Button
+                        variant="outline"
+                        onClick={() => {
+                          setIsEditEntryDialogOpen(false);
+                          setVrstaObelezbe("");
+                          setDolzina("");
+                          setSteviloElementov("");
+                          setCurrentEntry(null);
+                        }}
+                        disabled={isSaving}
+                      >
+                        Prekliči
+                      </Button>
+                      <Button onClick={handleUpdateEntry} disabled={isSaving}>
+                        {isSaving ? "Shranjevanje..." : "Shrani"}
+                      </Button>
+                    </DialogFooter>
+                  </DialogContent>
+                </Dialog>
 
                 {workEntries.length > 0 ? (
                   <div className="rounded-md border">
@@ -1015,7 +1040,11 @@ const WorkOrderDetailPage = () => {
                                 </Button>
                                 <AlertDialog>
                                   <AlertDialogTrigger asChild>
-                                    <Button variant="ghost" size="sm" className="gap-2 text-destructive hover:text-destructive">
+                                    <Button
+                                      variant="ghost"
+                                      size="sm"
+                                      className="gap-2 text-destructive hover:text-destructive"
+                                    >
                                       <Trash2 className="h-4 w-4" />
                                       Izbriši
                                     </Button>
@@ -1029,8 +1058,8 @@ const WorkOrderDetailPage = () => {
                                     </AlertDialogHeader>
                                     <AlertDialogFooter>
                                       <AlertDialogCancel>Prekliči</AlertDialogCancel>
-                                      <AlertDialogAction 
-                                        onClick={() => handleDeleteEntry(entry.id)} 
+                                      <AlertDialogAction
+                                        onClick={() => handleDeleteEntry(entry.id)}
                                         disabled={isDeleting}
                                         className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
                                       >
