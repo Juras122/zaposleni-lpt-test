@@ -18,6 +18,7 @@ import {
   SquareParking,
   Warehouse,
   FilePen,
+  Car,
 } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
@@ -91,6 +92,13 @@ export const ProfileSidebar = ({ profile }: ProfileSidebarProps) => {
       label: "Parkirišča",
       icon: FileText,
       items: [{ id: "PARK", label: "Parkirišča", icon: SquareParking }],
+    },
+
+    {
+      id: "VOP",
+      label: "Vozni park",
+      icon: FileText,
+      items: [{ id: "UVOP", label: "Upravljanje voznega parka", icon: Car }],
     },
 
     {
