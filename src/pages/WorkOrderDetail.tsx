@@ -298,7 +298,7 @@ const WorkOrderDetailPage = () => {
     setCurrentEntry(entry);
     setVrstaObelezbe(entry.naziv_elementa);
     setDolzina(entry.dolzina || "");
-    setSteviloElementov(entry.st_elemetov || "");
+    setSteviloElementov(entry.st_elemtov || "");
     setIsEditEntryDialogOpen(true);
   };
 
