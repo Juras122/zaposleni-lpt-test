@@ -97,8 +97,8 @@ export const ProfileSidebar = ({ profile }: ProfileSidebarProps) => {
     {
       id: "VOP",
       label: "Vozni park",
-      icon: FileText,
-      items: [{ id: "UVOP", label: "Upravljanje voznega parka", icon: Car }],
+      icon: Car,
+      items: [{ id: "UVOP", label: "Upravljanje voznega parka", icon: SquareParking }],
     },
 
     {
