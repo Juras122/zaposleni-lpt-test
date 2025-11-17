@@ -114,11 +114,13 @@ export const ProfileSidebar = ({ profile }: ProfileSidebarProps) => {
       label: "Druge storitve",
       icon: Package,
       items: [
+        { id: "OTH", label: "Drugo", icon: FileText },
         { id: "OPT", label: "Optika", icon: FileText },
         { id: "TRZ", label: "Tržnice", icon: FileText },
         { id: "PAJ", label: "Odvoz vozil", icon: FileText },
       ],
     },
+
     {
       id: "upravljanje-segment",
       label: "Upravljanje",
