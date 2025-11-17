@@ -57,7 +57,7 @@ export interface WorkEntry {
   naziv_elementa: string;
   znacilka?: string;
   dolzina?: string;
-  st_elemtov?: string;
+  st_elementov?: string;
   material?: string;
   kvadratura?: string;
   datum_vnosa: string;

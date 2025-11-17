@@ -298,7 +298,7 @@ const WorkOrderDetailPage = () => {
     setCurrentEntry(entry);
     setVrstaObelezbe(entry.naziv_elementa);
     setDolzina(entry.dolzina || "");
-    setSteviloElementov(entry.st_elemtov || "");
+    setSteviloElementov(entry.st_elementov || "");
     setIsEditEntryDialogOpen(true);
   };
 
@@ -443,7 +443,7 @@ const WorkOrderDetailPage = () => {
         (index + 1).toString(),
         entry.naziv_elementa,
         entry.dolzina || "-",
-        entry.st_elemtov || "-",
+        entry.st_elementov || "-",
         new Date(entry.datum_vnosa).toLocaleDateString("sl-SI"),
       ]);
 
@@ -481,8 +481,8 @@ const WorkOrderDetailPage = () => {
         .toFixed(2);
 
       const totalElementov = workEntries
-        .filter((e) => e.st_elemtov)
-        .reduce((sum, e) => sum + parseInt(e.st_elemtov!), 0);
+        .filter((e) => e.st_elementov)
+        .reduce((sum, e) => sum + parseInt(e.st_elementov!), 0);
 
       doc.setFontSize(10);
       doc.setFont("helvetica", "bold");
@@ -1017,7 +1017,7 @@ const WorkOrderDetailPage = () => {
                           <TableRow key={entry.id}>
                             <TableCell className="font-medium">{entry.naziv_elementa}</TableCell>
                             <TableCell>{entry.dolzina || "-"}</TableCell>
-                            <TableCell>{entry.st_elemtov || "-"}</TableCell>
+                            <TableCell>{entry.st_elementov || "-"}</TableCell>
                             <TableCell className="text-muted-foreground">
                               {new Date(entry.datum_vnosa).toLocaleDateString("sl-SI", {
                                 year: "numeric",
