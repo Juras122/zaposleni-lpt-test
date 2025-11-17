@@ -1,13 +1,13 @@
-import { useEffect, useState } from 'react';
-import { useNavigate, useSearchParams } from 'react-router-dom';
-import { Header } from '@/components/Header';
-import { ProfileSidebar } from '@/components/ProfileSidebar';
-import { Button } from '@/components/ui/button';
-import { Card } from '@/components/ui/card';
-import { fetchUserProfile, fetchWorkHours } from '@/lib/api';
-import { UserProfile, WorkHour } from '@/types';
-import { Clock } from 'lucide-react';
-import { toast } from 'sonner';
+import { useEffect, useState } from "react";
+import { useNavigate, useSearchParams } from "react-router-dom";
+import { Header } from "@/components/Header";
+import { ProfileSidebar } from "@/components/ProfileSidebar";
+import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
+import { fetchUserProfile, fetchWorkHours } from "@/lib/api";
+import { UserProfile, WorkHour } from "@/types";
+import { Clock } from "lucide-react";
+import { toast } from "sonner";
 
 const WorkHours = () => {
   const [searchParams] = useSearchParams();
@@ -18,13 +18,13 @@ const WorkHours = () => {
 
   useEffect(() => {
     const loadData = async () => {
-      const urlUserId = searchParams.get('id');
-      const sessionUserId = sessionStorage.getItem('loggedInUserId');
+      const urlUserId = searchParams.get("id");
+      const sessionUserId = sessionStorage.getItem("loggedInUserId");
       const userId = urlUserId || sessionUserId;
 
       if (!userId) {
-        toast.error('Niste prijavljeni');
-        navigate('/');
+        toast.error("Niste prijavljeni");
+        navigate("/");
         return;
       }
 
@@ -33,28 +33,25 @@ const WorkHours = () => {
       }
 
       if (urlUserId) {
-        sessionStorage.setItem('loggedInUserId', urlUserId);
+        sessionStorage.setItem("loggedInUserId", urlUserId);
       }
 
       try {
-        const [profileData, workHoursData] = await Promise.all([
-          fetchUserProfile(userId),
-          fetchWorkHours(userId)
-        ]);
-        
+        const [profileData, workHoursData] = await Promise.all([fetchUserProfile(userId), fetchWorkHours(userId)]);
+
         // Sort work hours by date, newest first
         const sortedWorkHours = [...workHoursData].sort((a, b) => {
-          const dateA = new Date(a.datum.split('.').reverse().join('-'));
-          const dateB = new Date(b.datum.split('.').reverse().join('-'));
+          const dateA = new Date(a.datum.split(".").reverse().join("-"));
+          const dateB = new Date(b.datum.split(".").reverse().join("-"));
           return dateB.getTime() - dateA.getTime();
         });
-        
+
         setProfile(profileData);
         setWorkHours(sortedWorkHours);
       } catch (error) {
-        console.error('Error loading data:', error);
-        toast.error('Napaka pri nalaganju podatkov');
-        navigate('/');
+        console.error("Error loading data:", error);
+        toast.error("Napaka pri nalaganju podatkov");
+        navigate("/");
       } finally {
         setIsLoading(false);
       }
@@ -62,7 +59,6 @@ const WorkHours = () => {
 
     loadData();
   }, [searchParams, navigate]);
-
 
   if (isLoading) {
     return (
@@ -87,16 +83,16 @@ const WorkHours = () => {
   return (
     <div className="min-h-screen bg-background">
       <Header />
-      
+
       <div className="container mx-auto p-4 lg:p-8">
         <div className="flex flex-col gap-6 lg:flex-row">
           <ProfileSidebar profile={profile} />
-          
+
           <main className="flex-1 space-y-6">
             <div>
               <h1 className="text-3xl font-bold">Evidenca delovnega časa</h1>
               <p className="mt-2 text-muted-foreground">
-                Skupno ur tega meseca: <span className="font-semibold text-primary">{totalHours.toFixed(1)}h</span>
+                Skupno ur tega leta: <span className="font-semibold text-primary">{totalHours.toFixed(1)}h</span>
               </p>
             </div>
 
