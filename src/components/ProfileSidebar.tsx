@@ -150,6 +150,7 @@ export const ProfileSidebar = ({ profile }: ProfileSidebarProps) => {
       items: [
         { id: "obrc", label: "Obračun", icon: Calculator },
         { id: "finc", label: "Finance", icon: DollarSign },
+        { id: "naba", label: "Nabava", icon: DollarSign },
       ],
     },
   ];
